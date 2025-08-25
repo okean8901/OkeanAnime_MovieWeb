@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Okean_AnimeMovie.Core.DTOs;
 
 public class AnimeDto
@@ -22,29 +24,76 @@ public class AnimeDto
 
 public class CreateAnimeDto
 {
+    [Required]
+    [StringLength(200)]
     public string Title { get; set; } = string.Empty;
+
+    [StringLength(200)]
     public string? AlternativeTitle { get; set; }
+
+    [StringLength(2000)]
     public string? Description { get; set; }
+
+    [Url]
+    [StringLength(500)]
     public string? Poster { get; set; }
+
+    [Url]
+    [StringLength(500)]
     public string? Trailer { get; set; }
+
+    [Range(1900, 2100)]
     public int ReleaseYear { get; set; }
+
+    [Range(0, 10000)]
     public int TotalEpisodes { get; set; }
+
+    [Required]
+    [StringLength(20)]
     public string Status { get; set; } = "Ongoing";
+
+    [Required]
+    [StringLength(20)]
     public string Type { get; set; } = "TV";
+
     public List<int> GenreIds { get; set; } = new List<int>();
 }
 
 public class UpdateAnimeDto
 {
     public int Id { get; set; }
+
+    [Required]
+    [StringLength(200)]
     public string Title { get; set; } = string.Empty;
+
+    [StringLength(200)]
     public string? AlternativeTitle { get; set; }
+
+    [StringLength(2000)]
     public string? Description { get; set; }
+
+    [Url]
+    [StringLength(500)]
     public string? Poster { get; set; }
+
+    [Url]
+    [StringLength(500)]
     public string? Trailer { get; set; }
+
+    [Range(1900, 2100)]
     public int ReleaseYear { get; set; }
+
+    [Range(0, 10000)]
     public int TotalEpisodes { get; set; }
+
+    [Required]
+    [StringLength(20)]
     public string Status { get; set; } = "Ongoing";
+
+    [Required]
+    [StringLength(20)]
     public string Type { get; set; } = "TV";
+
     public List<int> GenreIds { get; set; } = new List<int>();
 }

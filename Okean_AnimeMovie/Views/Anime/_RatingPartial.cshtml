@@ -1,0 +1,43 @@
+@model Okean_AnimeMovie.Core.Entities.Anime
+
+<div id="rating-container" class="d-flex align-items-center gap-3">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-star-fill text-warning me-1"></i>
+        <strong>@Model.Rating.ToString("F1")</strong>
+    </div>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        var myRating = ViewBag.MyRating as int?;
+        <div class="d-flex align-items-center gap-2">
+            <select id="ratingSelect" class="form-select form-select-sm" style="width: auto;">
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <option value="@i" selected="@(myRating.HasValue && myRating.Value == i)">@i</option>
+                }
+            </select>
+            <button class="btn btn-sm btn-primary" onclick="submitRating(@Model.Id)">Rate</button>
+        </div>
+    }
+    else
+    {
+        <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-primary">Login to rate</a>
+    }
+</div>
+
+<script>
+    async function submitRating(animeId) {
+        const score = document.getElementById('ratingSelect').value;
+        const res = await fetch(`@Url.Action("Rate", "Anime")?animeId=${animeId}&score=${score}`, {
+            method: 'POST',
+            headers: { 'RequestVerificationToken': getCsrfToken() }
+        });
+        if (res.ok) {
+            const html = await res.text();
+            document.getElementById('rating-container').outerHTML = html;
+        }
+    }
+    function getCsrfToken() {
+        const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+        return tokenInput ? tokenInput.value : '';
+    }
+</script>

@@ -1,0 +1,225 @@
+@model Okean_AnimeMovie.Core.Entities.Episode
+@{
+    var anime = ViewBag.Anime as Okean_AnimeMovie.Core.Entities.Anime;
+    ViewData["Title"] = $"Watch - {anime?.Title} - Episode {Model.EpisodeNumber}";
+
+    string? source = Model.VideoUrl;
+    string? embed = null;
+    bool isHls = false;
+    if (!string.IsNullOrWhiteSpace(source))
+    {
+        try
+        {
+            var uri = new Uri(source);
+            var host = uri.Host.ToLowerInvariant();
+            if (source.EndsWith(".m3u8", StringComparison.OrdinalIgnoreCase))
+            {
+                isHls = true;
+                embed = source;
+            }
+            else if (host.Contains("youtube.com") || host.Contains("youtu.be"))
+            {
+                string? videoId = null;
+                if (host.Contains("youtu.be")) videoId = uri.AbsolutePath.Trim('/');
+                else if (uri.AbsolutePath.StartsWith("/watch", StringComparison.OrdinalIgnoreCase))
+                {
+                    var q = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                    videoId = q.Get("v");
+                }
+                if (!string.IsNullOrEmpty(videoId))
+                {
+                    embed = $"https://www.youtube.com/embed/{videoId}?rel=0";
+                }
+            }
+            else if (host.Contains("drive.google.com"))
+            {
+                var parts = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var idx = Array.FindIndex(parts, p => p.Equals("d", StringComparison.OrdinalIgnoreCase));
+                if (idx >= 0 && idx + 1 < parts.Length)
+                {
+                    var fileId = parts[idx + 1];
+                    embed = $"https://drive.google.com/file/d/{fileId}/preview";
+                }
+            }
+            else
+            {
+                embed = source;
+            }
+        }
+        catch { }
+    }
+}
+
+<div class="container my-4">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-3 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                        <div>
+                            <h5 class="mb-0">@anime?.Title</h5>
+                            <small class="text-muted">Episode @Model.EpisodeNumber @if(!string.IsNullOrWhiteSpace(Model.Title)){<text>- @Model.Title</text>}</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="autoplayToggle">
+                                <label class="form-check-label" for="autoplayToggle">Autoplay next</label>
+                            </div>
+                            <a class="btn btn-outline-secondary btn-sm" asp-action="Details" asp-route-id="@anime?.Id">
+                                <i class="bi bi-info-circle me-1"></i> Details
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ratio ratio-16x9 rounded-3 overflow-hidden bg-black">
+                        @if (isHls)
+                        {
+                            <video id="player" controls crossorigin playsinline></video>
+                        }
+                        else if (!string.IsNullOrWhiteSpace(embed))
+                        {
+                            <iframe id="iframePlayer" src="@embed" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center justify-content-center text-white-50">No video source</div>
+                        }
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted small">Shortcuts: Space (play/pause), ←/→ (seek), F (fullscreen)</div>
+                        <div class="d-flex gap-2">
+                            @if (ViewBag.PreviousEpisode != null)
+                            {
+                                <a class="btn btn-outline-secondary" asp-action="Watch" asp-route-animeId="@anime?.Id" asp-route-episodeNumber="@ViewBag.PreviousEpisode">
+                                    <i class="bi bi-chevron-left"></i> Previous
+                                </a>
+                            }
+                            @if (ViewBag.NextEpisode != null)
+                            {
+                                <a id="nextBtn" class="btn btn-primary" asp-action="Watch" asp-route-animeId="@anime?.Id" asp-route-episodeNumber="@ViewBag.NextEpisode">
+                                    Next <i class="bi bi-chevron-right"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="mb-3">Episodes</h6>
+                    @if (anime != null && anime.Episodes != null && anime.Episodes.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var ep in anime.Episodes.OrderBy(e => e.EpisodeNumber))
+                            {
+                                var active = ep.Id == Model.Id ? "active" : string.Empty;
+                                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @active" asp-action="Watch" asp-route-animeId="@anime.Id" asp-route-episodeNumber="@ep.EpisodeNumber">
+                                    <span>Ep. @ep.EpisodeNumber</span>
+                                    <i class="bi bi-play-circle"></i>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No episodes.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (isHls)
+    {
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <script>
+            (function(){
+                const video = document.getElementById('player');
+                const src = '@(embed ?? "")';
+                const key = `watch:${@anime?.Id}:@Model.EpisodeNumber`;
+                const autoKey = 'watch:autoplay';
+
+                // HLS setup
+                if (Hls.isSupported()) {
+                    const hls = new Hls({
+                        maxBufferLength: 60,
+                        maxMaxBufferLength: 120
+                    });
+                    hls.loadSource(src);
+                    hls.attachMedia(video);
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = src;
+                }
+
+                // Restore time
+                const saved = localStorage.getItem(key);
+                if (saved) {
+                    const t = parseFloat(saved);
+                    if (!isNaN(t)) {
+                        video.currentTime = t;
+                    }
+                }
+
+                // Save time periodically
+                let saveTimer = null;
+                video.addEventListener('timeupdate', () => {
+                    if (saveTimer) return;
+                    saveTimer = setTimeout(() => {
+                        localStorage.setItem(key, String(video.currentTime));
+                        saveTimer = null;
+                    }, 1000);
+                });
+
+                // Autoplay next
+                const nextBtn = document.getElementById('nextBtn');
+                const autoplayToggle = document.getElementById('autoplayToggle');
+                autoplayToggle.checked = localStorage.getItem(autoKey) === '1';
+                autoplayToggle.addEventListener('change', () => {
+                    localStorage.setItem(autoKey, autoplayToggle.checked ? '1' : '0');
+                });
+                video.addEventListener('ended', () => {
+                    if (autoplayToggle.checked && nextBtn) {
+                        window.location.href = nextBtn.getAttribute('href');
+                    }
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+                    if (e.code === 'Space') { e.preventDefault(); video.paused ? video.play() : video.pause(); }
+                    if (e.code === 'ArrowRight') { video.currentTime += 5; }
+                    if (e.code === 'ArrowLeft') { video.currentTime -= 5; }
+                    if (e.key.toLowerCase() === 'f') { if (video.requestFullscreen) video.requestFullscreen(); }
+                });
+            })();
+        </script>
+    }
+    else
+    {
+        <script>
+            (function(){
+                const autoKey = 'watch:autoplay';
+                const autoplayToggle = document.getElementById('autoplayToggle');
+                const nextBtn = document.getElementById('nextBtn');
+                autoplayToggle.checked = localStorage.getItem(autoKey) === '1';
+                autoplayToggle.addEventListener('change', () => {
+                    localStorage.setItem(autoKey, autoplayToggle.checked ? '1' : '0');
+                });
+                // For iframe providers we cannot track ended reliably; user can click Next
+                document.addEventListener('keydown', (e) => {
+                    if (e.key.toLowerCase() === 'f') {
+                        const frame = document.getElementById('iframePlayer');
+                        if (frame && frame.requestFullscreen) frame.requestFullscreen();
+                    }
+                });
+            })();
+        </script>
+    }
+
+    <style>
+        .list-group-item.active { background: #eef3ff; color: #0d6efd; font-weight: 600; }
+    </style>
+}

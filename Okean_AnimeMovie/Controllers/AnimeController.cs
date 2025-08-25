@@ -12,17 +12,23 @@ public class AnimeController : Controller
     private readonly IGenericRepository<Genre> _genreRepository;
     private readonly ILogger<AnimeController> _logger;
     private readonly IFavoriteRepository _favoriteRepository;
+    private readonly IGenericRepository<Comment> _commentRepository;
+    private readonly IGenericRepository<Rating> _ratingRepository;
 
     public AnimeController(
         IAnimeRepository animeRepository,
         IGenericRepository<Genre> genreRepository,
         ILogger<AnimeController> logger,
-        IFavoriteRepository favoriteRepository)
+        IFavoriteRepository favoriteRepository,
+        IGenericRepository<Comment> commentRepository,
+        IGenericRepository<Rating> ratingRepository)
     {
         _animeRepository = animeRepository;
         _genreRepository = genreRepository;
         _logger = logger;
         _favoriteRepository = favoriteRepository;
+        _commentRepository = commentRepository;
+        _ratingRepository = ratingRepository;
     }
 
     public async Task<IActionResult> Index(string searchTerm, int? genreId, int? year, int page = 1)
@@ -66,6 +72,10 @@ public class AnimeController : Controller
                 {
                     var isFav = await _favoriteRepository.IsFavoriteAsync(userId, id);
                     ViewBag.IsFavorite = isFav;
+
+                    // Current user's rating if exists
+                    var myRating = anime.Ratings?.FirstOrDefault(r => r.UserId == userId)?.Score;
+                    ViewBag.MyRating = myRating;
                 }
             }
 
@@ -98,6 +108,8 @@ public class AnimeController : Controller
             }
 
             ViewBag.Anime = anime;
+            ViewBag.PreviousEpisode = anime.Episodes.OrderBy(e => e.EpisodeNumber).LastOrDefault(e => e.EpisodeNumber < episodeNumber)?.EpisodeNumber;
+            ViewBag.NextEpisode = anime.Episodes.OrderBy(e => e.EpisodeNumber).FirstOrDefault(e => e.EpisodeNumber > episodeNumber)?.EpisodeNumber;
             return View(episode);
         }
         catch (Exception ex)
@@ -328,5 +340,81 @@ public class AnimeController : Controller
             await _favoriteRepository.RemoveFromFavoritesAsync(userId, id);
         }
         return RedirectToAction("Details", new { id });
+    }
+
+    // Comments (Ajax)
+    [HttpGet]
+    public async Task<IActionResult> Comments(int animeId)
+    {
+        var anime = await _animeRepository.GetAnimeWithDetailsAsync(animeId);
+        if (anime == null)
+        {
+            return NotFound();
+        }
+        return PartialView("~/Views/Anime/_CommentsPartial.cshtml", anime);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddComment(int animeId, string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return BadRequest("Content required");
+        }
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized();
+
+        var comment = new Comment
+        {
+            AnimeId = animeId,
+            UserId = userId,
+            Content = content.Trim(),
+            CreatedAt = DateTime.UtcNow
+        };
+        await _commentRepository.AddAsync(comment);
+
+        var anime = await _animeRepository.GetAnimeWithDetailsAsync(animeId);
+        return PartialView("~/Views/Anime/_CommentsPartial.cshtml", anime);
+    }
+
+    // Ratings (Ajax)
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Rate(int animeId, int score)
+    {
+        if (score < 1 || score > 10)
+        {
+            return BadRequest("Score must be 1..10");
+        }
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized();
+
+        var anime = await _animeRepository.GetAnimeWithDetailsAsync(animeId);
+        if (anime == null) return NotFound();
+
+        var existing = anime.Ratings?.FirstOrDefault(r => r.UserId == userId);
+        if (existing == null)
+        {
+            existing = new Rating { AnimeId = animeId, UserId = userId, Score = score, CreatedAt = DateTime.UtcNow };
+            await _ratingRepository.AddAsync(existing);
+        }
+        else
+        {
+            existing.Score = score;
+            await _ratingRepository.UpdateAsync(existing);
+        }
+
+        // Recalculate average
+        anime = await _animeRepository.GetAnimeWithDetailsAsync(animeId);
+        if (anime != null && anime.Ratings != null && anime.Ratings.Any())
+        {
+            anime.Rating = Math.Round(anime.Ratings.Average(r => r.Score), 1);
+            await _animeRepository.UpdateAsync(anime);
+        }
+
+        return PartialView("~/Views/Anime/_RatingPartial.cshtml", anime);
     }
 }

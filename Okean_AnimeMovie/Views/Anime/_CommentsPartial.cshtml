@@ -1,0 +1,67 @@
+@model Okean_AnimeMovie.Core.Entities.Anime
+
+<div id="comments-container">
+    <h6 class="mb-3">Comments (@(Model.Comments?.Count ?? 0))</h6>
+
+    <div class="list-group mb-3">
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            foreach (var c in Model.Comments.OrderByDescending(c => c.CreatedAt))
+            {
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>@(c.User != null ? c.User.UserName : "User")</strong>
+                        <small class="text-muted">@c.CreatedAt.ToLocalTime().ToString("g")</small>
+                    </div>
+                    <div>@c.Content</div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="list-group-item text-muted">No comments yet.</div>
+        }
+    </div>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <form id="commentForm" onsubmit="return submitComment(event);">
+            <input type="hidden" id="animeId" value="@Model.Id" />
+            <div class="input-group">
+                <input type="text" id="commentContent" class="form-control" placeholder="Write a comment..." required />
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-info">Please <a asp-controller="Account" asp-action="Login">login</a> to comment.</div>
+    }
+</div>
+
+<script>
+    async function submitComment(e) {
+        e.preventDefault();
+        const animeId = document.getElementById('animeId').value;
+        const content = document.getElementById('commentContent').value.trim();
+        if (!content) return false;
+
+        const res = await fetch(`@Url.Action("AddComment", "Anime")?animeId=${animeId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getCsrfToken() },
+            body: `content=${encodeURIComponent(content)}`
+        });
+        if (res.ok) {
+            const html = await res.text();
+            document.getElementById('comments-container').outerHTML = html;
+        }
+        return false;
+    }
+
+    function getCsrfToken() {
+        const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+        return tokenInput ? tokenInput.value : '';
+    }
+</script>
