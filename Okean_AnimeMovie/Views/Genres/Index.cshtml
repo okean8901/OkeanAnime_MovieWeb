@@ -1,0 +1,41 @@
+@model IEnumerable<Okean_AnimeMovie.Core.Entities.Genre>
+
+@{
+    ViewData["Title"] = "Genres";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h3 mb-0"><i class="bi bi-tags me-2"></i>Genres</h2>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add Genre</a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th>Name</th>
+                        <th class="text-end" style="width: 160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var g in Model)
+                {
+                    <tr>
+                        <td>@g.Id</td>
+                        <td>@g.Name</td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@g.Id" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Delete" asp-route-id="@g.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete @g.Name?');"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

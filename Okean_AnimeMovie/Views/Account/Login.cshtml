@@ -1,0 +1,352 @@
+@model Okean_AnimeMovie.Core.DTOs.LoginDto
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="login-page min-vh-100 d-flex align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7 col-sm-9">
+                <!-- Login Card -->
+                <div class="card login-card border-0 shadow-lg">
+                    <div class="card-header bg-gradient-primary text-white text-center py-4 border-0">
+                        <div class="login-icon mb-3">
+                            <div class="icon-circle bg-white bg-opacity-20 mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="bi bi-box-arrow-in-right text-white display-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="mb-0 fw-bold">Welcome Back!</h3>
+                        <p class="mb-0 opacity-75">Sign in to your account</p>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <form asp-action="Login" method="post" class="login-form">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                            
+                            <!-- Email Field -->
+                            <div class="form-floating mb-4">
+                                <input asp-for="Email" type="email" class="form-control" id="emailInput" placeholder="Enter your email">
+                                <label for="emailInput">
+                                    <i class="bi bi-envelope me-2"></i>Email Address
+                                </label>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="form-floating mb-4">
+                                <input asp-for="Password" type="password" class="form-control" id="passwordInput" placeholder="Enter your password">
+                                <label for="passwordInput">
+                                    <i class="bi bi-lock me-2"></i>Password
+                                </label>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Remember Me & Forgot Password -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a asp-action="ForgotPassword" class="text-decoration-none text-primary fw-medium">
+                                    <i class="bi bi-question-circle me-1"></i>Forgot password?
+                                </a>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                                </button>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="text-center mb-4">
+                                <span class="text-muted">or continue with</span>
+                            </div>
+
+                            <!-- Social Login Buttons -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-secondary w-100 py-2">
+                                        <i class="bi bi-google me-2"></i>Google
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-secondary w-100 py-2">
+                                        <i class="bi bi-facebook me-2"></i>Facebook
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent text-center py-4 border-0">
+                        <p class="mb-0">
+                            Don't have an account? 
+                            <a asp-action="Register" class="text-decoration-none fw-bold text-primary">Create one here</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        By signing in, you agree to our 
+                        <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                        <a href="#" class="text-decoration-none">Privacy Policy</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Background Elements -->
+<div class="background-elements">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add floating animation to form elements
+            const formElements = document.querySelectorAll('.form-floating');
+            formElements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = `all 0.6s ease-out ${index * 0.1}s`;
+                
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 100 + (index * 100));
+            });
+
+            // Add focus effects
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+            });
+
+            // Add loading state to submit button
+            const form = document.querySelector('.login-form');
+            form.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
+                submitBtn.disabled = true;
+                
+                // Re-enable after 3 seconds (in case of error)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            });
+        });
+    </script>
+    
+    <style>
+        .login-page {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-card {
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .login-icon {
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @@keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .form-floating {
+            position: relative;
+        }
+        
+        .form-floating .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            height: 60px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-floating .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .form-floating .form-control:focus + label {
+            color: #667eea;
+        }
+        
+        .form-floating label {
+            padding: 20px 15px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .form-floating.focused label {
+            color: #667eea;
+        }
+        
+        .btn {
+            border-radius: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        
+        .btn-outline-secondary {
+            border: 2px solid #e9ecef;
+            color: #6c757d;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+        
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .background-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .shape-1 {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @@keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+        
+        .alert {
+            border-radius: 15px;
+            border: none;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+        
+        .text-primary {
+            color: #667eea !important;
+        }
+        
+        .text-decoration-none:hover {
+            text-decoration: underline !important;
+        }
+        
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .login-card {
+                margin: 20px;
+            }
+            
+            .card-body {
+                padding: 2rem !important;
+            }
+            
+            .floating-shape {
+                display: none;
+            }
+        }
+        
+        /* Loading animation */
+        .spinner-border {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        /* Focus ring for accessibility */
+        .form-control:focus,
+        .btn:focus,
+        .form-check-input:focus {
+            outline: none;
+        }
+    </style>
+}

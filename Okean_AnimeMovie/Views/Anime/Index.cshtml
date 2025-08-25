@@ -1,0 +1,553 @@
+@model IEnumerable<Okean_AnimeMovie.Core.Entities.Anime>
+
+@{
+    ViewData["Title"] = "Anime Library";
+}
+
+<!-- Hero Banner -->
+<div class="hero-banner bg-gradient-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="bi bi-collection-play me-3"></i>Anime Library
+                </h1>
+                <p class="lead mb-4">Discover thousands of anime series and movies from around the world</p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="hero-icon-container">
+                    <i class="bi bi-play-circle-fill display-1 text-warning hero-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-4">
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section mb-5">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="search-container">
+                            <form method="get" class="d-flex">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-primary text-white border-0">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" name="searchTerm" class="form-control form-control-lg border-0" 
+                                           placeholder="Search anime by title, genre, or description..." 
+                                           value="@ViewBag.SearchTerm">
+                                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                                        <i class="bi bi-search me-2"></i>Search
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <select name="genreId" class="form-select form-select-lg" onchange="this.form.submit()">
+                                    <option value="">All Genres</option>
+                                    @if (ViewBag.Genres != null)
+                                    {
+                                        foreach (var genre in ViewBag.Genres)
+                                        {
+                                            var selected = ViewBag.SelectedGenreId != null && ViewBag.SelectedGenreId.ToString() == genre.Id.ToString();
+                                            <option value="@genre.Id" selected="@selected">@genre.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select name="year" class="form-select form-select-lg" onchange="this.form.submit()">
+                                    <option value="">All Years</option>
+                                    @for (int year = DateTime.Now.Year; year >= 1990; year--)
+                                    {
+                                        var selected = ViewBag.SelectedYear != null && ViewBag.SelectedYear.ToString() == year.ToString();
+                                        <option value="@year" selected="@selected">@year</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Active Filters -->
+                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm) || ViewBag.SelectedGenreId != null || ViewBag.SelectedYear != null)
+                {
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <small class="text-muted fw-bold">Active filters:</small>
+                            @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+                            {
+                                <span class="badge bg-primary fs-6 px-3 py-2">
+                                    Search: @ViewBag.SearchTerm
+                                    <a href="@Url.Action("Index", new { genreId = ViewBag.SelectedGenreId, year = ViewBag.SelectedYear })" 
+                                       class="text-white text-decoration-none ms-2">×</a>
+                                </span>
+                            }
+                            @if (ViewBag.SelectedGenreId != null)
+                            {
+                                string genreName = "Unknown";
+                                if (ViewBag.Genres != null)
+                                {
+                                    foreach (var g in ViewBag.Genres)
+                                    {
+                                        if (g.Id == ViewBag.SelectedGenreId)
+                                        {
+                                            genreName = g.Name;
+                                            break;
+                                        }
+                                    }
+                                }
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    Genre: @genreName
+                                    <a href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, year = ViewBag.SelectedYear })" 
+                                       class="text-white text-decoration-none ms-2">×</a>
+                                </span>
+                            }
+                            @if (ViewBag.SelectedYear != null)
+                            {
+                                <span class="badge bg-info fs-6 px-3 py-2">
+                                    Year: @ViewBag.SelectedYear
+                                    <a href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, genreId = ViewBag.SelectedGenreId })" 
+                                       class="text-white text-decoration-none ms-2">×</a>
+                                </span>
+                            }
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1"></i>Clear All
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-1">
+                <i class="bi bi-collection me-2 text-primary"></i>Results
+            </h2>
+            <p class="text-muted mb-0">
+                @if (Model.Any())
+                {
+                    <span>Showing @Model.Count() anime</span>
+                    @if (ViewBag.TotalPages > 1)
+                    {
+                        <span> • Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+                    }
+                }
+                else
+                {
+                    <span>No anime found</span>
+                }
+            </p>
+        </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Add New Anime
+            </a>
+        }
+    </div>
+
+    <!-- Anime Grid -->
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var anime in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card anime-card h-100 border-0 shadow-lg hover-lift">
+                        <div class="card-img-top d-flex align-items-center justify-content-center position-relative" 
+                             style="height: 280px; background: linear-gradient(45deg, #667eea, #764ba2);">
+                            @if (!string.IsNullOrEmpty(anime.Poster))
+                            {
+                                <img src="@anime.Poster" class="img-fluid" alt="@anime.Title" style="max-height: 100%; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <i class="bi bi-image text-light display-1"></i>
+                            }
+                            
+                            <!-- Overlay with quick actions -->
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex align-items-center justify-content-center opacity-0 transition-opacity">
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Details" asp-route-id="@anime.Id" 
+                                       class="btn btn-primary btn-sm">
+                                        <i class="bi bi-eye me-1"></i>View
+                                    </a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@anime.Id" 
+                                           class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-truncate mb-2" title="@anime.Title">@anime.Title</h5>
+                            
+                            @if (!string.IsNullOrEmpty(anime.AlternativeTitle))
+                            {
+                                <p class="card-text text-muted small mb-2">@anime.AlternativeTitle</p>
+                            }
+                            
+                            <!-- Genres -->
+                            <div class="mb-3">
+                                @foreach (var animeGenre in anime.AnimeGenres.Take(3))
+                                {
+                                    <span class="badge bg-primary me-1 mb-1">@animeGenre.Genre.Name</span>
+                                }
+                                @if (anime.AnimeGenres.Count > 3)
+                                {
+                                    <span class="badge bg-secondary">+@(anime.AnimeGenres.Count - 3)</span>
+                                }
+                            </div>
+                            
+                            <!-- Info badges -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-info">@anime.Type</span>
+                                <small class="text-muted">@anime.ReleaseYear</small>
+                            </div>
+                            
+                            <!-- Rating and episodes -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="rating d-flex align-items-center">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                    <span class="fw-bold">@anime.Rating.ToString("F1")</span>
+                                </div>
+                                <small class="text-muted">@anime.TotalEpisodes ep</small>
+                            </div>
+                            
+                            <!-- Progress bar for rating -->
+                            <div class="progress mb-3" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: @(anime.Rating * 10)%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-transparent border-0 pt-0">
+                            <div class="d-grid gap-2">
+                                <a asp-action="Details" asp-route-id="@anime.Id" 
+                                   class="btn btn-outline-primary btn-sm hover-lift">
+                                    <i class="bi bi-eye me-1"></i>View Details
+                                </a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@anime.Id" 
+                                           class="btn btn-outline-warning hover-lift">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger hover-lift" 
+                                                onclick="confirmDelete(@anime.Id, '@anime.Title')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <nav aria-label="Anime pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link hover-lift" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" 
+                               asp-route-searchTerm="@ViewBag.SearchTerm" 
+                               asp-route-genreId="@ViewBag.SelectedGenreId" 
+                               asp-route-year="@ViewBag.SelectedYear">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link hover-lift" asp-action="Index" asp-route-page="@i" 
+                               asp-route-searchTerm="@ViewBag.SearchTerm" 
+                               asp-route-genreId="@ViewBag.SelectedGenreId" 
+                               asp-route-year="@ViewBag.SelectedYear">@i</a>
+                        </li>
+                    }
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link hover-lift" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" 
+                               asp-route-searchTerm="@ViewBag.SearchTerm" 
+                               asp-route-genreId="@ViewBag.SelectedGenreId" 
+                               asp-route-year="@ViewBag.SelectedYear">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <i class="bi bi-search display-1 text-muted mb-4"></i>
+                    <h3 class="text-muted mb-3">No anime found</h3>
+                    <p class="text-muted mb-4">Try adjusting your search criteria or browse our trending anime.</p>
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a asp-action="Trending" class="btn btn-primary btn-lg">
+                            <i class="bi bi-fire me-2"></i>View Trending
+                        </a>
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="bi bi-trash display-1 text-danger mb-3"></i>
+                <h6>Are you sure you want to delete "<span id="animeTitle" class="fw-bold"></span>"?</h6>
+                <p class="text-muted">This action cannot be undone and will remove all associated data.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
+                <form id="deleteForm" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to anime cards
+            document.querySelectorAll('.anime-card').forEach(card => {
+                const overlay = card.querySelector('.bg-dark.bg-opacity-75');
+                
+                card.addEventListener('mouseenter', function() {
+                    if (overlay) overlay.classList.remove('opacity-0');
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    if (overlay) overlay.classList.add('opacity-0');
+                });
+            });
+
+            // Add loading animation to search button
+            const searchForm = document.querySelector('form[method="get"]');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function() {
+                    const searchBtn = this.querySelector('button[type="submit"]');
+                    const originalText = searchBtn.innerHTML;
+                    searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
+                    searchBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        searchBtn.innerHTML = originalText;
+                        searchBtn.disabled = false;
+                    }, 1000);
+                });
+            }
+
+            // Smooth scroll to top when changing filters
+            document.querySelectorAll('select[name="genreId"], select[name="year"]').forEach(select => {
+                select.addEventListener('change', function() {
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
+                });
+            });
+
+            // Add animation to cards when they come into view
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.anime-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `all 0.6s ease-out ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+
+        function confirmDelete(animeId, animeTitle) {
+            document.getElementById('animeTitle').textContent = animeTitle;
+            document.getElementById('deleteForm').action = `/Anime/Delete/${animeId}`;
+            
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+
+        // Add smooth transitions
+        const style = document.createElement('style');
+        style.textContent = `
+            .transition-opacity {
+                transition: opacity 0.3s ease;
+            }
+            .anime-card {
+                transition: all 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <style>
+        .hero-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .hero-icon-container {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @@keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+        }
+        
+        .anime-card {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .anime-card .card-img-top {
+            transition: all 0.3s ease;
+        }
+        
+        .anime-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .search-filter-section .card {
+            border-radius: 20px;
+        }
+        
+        .search-container .input-group {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .search-container .form-control {
+            border: none;
+            box-shadow: none;
+        }
+        
+        .search-container .input-group-text {
+            border: none;
+        }
+        
+        .pagination .page-link {
+            border-radius: 10px;
+            margin: 0 2px;
+            border: none;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        
+        .badge {
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .progress {
+            border-radius: 10px;
+            background-color: #f8f9fa;
+        }
+        
+        .progress-bar {
+            border-radius: 10px;
+        }
+        
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .form-select, .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus, .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+    </style>
+}

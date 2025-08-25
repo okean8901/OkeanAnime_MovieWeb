@@ -1,0 +1,514 @@
+@model Okean_AnimeMovie.Core.DTOs.RegisterDto
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="register-page min-vh-100 d-flex align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <!-- Register Card -->
+                <div class="card register-card border-0 shadow-lg">
+                    <div class="card-header bg-gradient-success text-white text-center py-4 border-0">
+                        <div class="register-icon mb-3">
+                            <div class="icon-circle bg-white bg-opacity-20 mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="bi bi-person-plus text-white display-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="mb-0 fw-bold">Join Okean Anime!</h3>
+                        <p class="mb-0 opacity-75">Create your account and start watching</p>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <form asp-action="Register" method="post" class="register-form">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                            
+                            <!-- Username Field -->
+                            <div class="form-floating mb-4">
+                                <input asp-for="UserName" class="form-control" id="usernameInput" placeholder="Enter username">
+                                <label for="usernameInput">
+                                    <i class="bi bi-person me-2"></i>Username
+                                </label>
+                                <span asp-validation-for="UserName" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-floating mb-4">
+                                <input asp-for="Email" type="email" class="form-control" id="emailInput" placeholder="Enter email">
+                                <label for="emailInput">
+                                    <i class="bi bi-envelope me-2"></i>Email Address
+                                </label>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Name Fields -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input asp-for="FirstName" class="form-control" id="firstNameInput" placeholder="First name">
+                                        <label for="firstNameInput">
+                                            <i class="bi bi-person me-2"></i>First Name
+                                        </label>
+                                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input asp-for="LastName" class="form-control" id="lastNameInput" placeholder="Last name">
+                                        <label for="lastNameInput">
+                                            <i class="bi bi-person me-2"></i>Last Name
+                                        </label>
+                                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password Fields -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input asp-for="Password" type="password" class="form-control" id="passwordInput" placeholder="Enter password">
+                                        <label for="passwordInput">
+                                            <i class="bi bi-lock me-2"></i>Password
+                                        </label>
+                                        <span asp-validation-for="Password" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmPasswordInput" placeholder="Confirm password">
+                                        <label for="confirmPasswordInput">
+                                            <i class="bi bi-lock me-2"></i>Confirm Password
+                                        </label>
+                                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    I agree to the <a href="#" class="text-decoration-none text-primary">Terms of Service</a> and 
+                                    <a href="#" class="text-decoration-none text-primary">Privacy Policy</a>
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-success btn-lg py-3 fw-bold">
+                                    <i class="bi bi-person-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="text-center mb-4">
+                                <span class="text-muted">or sign up with</span>
+                            </div>
+
+                            <!-- Social Register Buttons -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-secondary w-100 py-2">
+                                        <i class="bi bi-google me-2"></i>Google
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-secondary w-100 py-2">
+                                        <i class="bi bi-facebook me-2"></i>Facebook
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent text-center py-4 border-0">
+                        <p class="mb-0">
+                            Already have an account? 
+                            <a asp-action="Login" class="text-decoration-none fw-bold text-success">Sign in here</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        By creating an account, you agree to our 
+                        <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                        <a href="#" class="text-decoration-none">Privacy Policy</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Background Elements -->
+<div class="background-elements">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add floating animation to form elements
+            const formElements = document.querySelectorAll('.form-floating');
+            formElements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = `all 0.6s ease-out ${index * 0.1}s`;
+                
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 100 + (index * 100));
+            });
+
+            // Add focus effects
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+            });
+
+            // Password strength indicator
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            
+            passwordInput.addEventListener('input', function() {
+                const strength = getPasswordStrength(this.value);
+                updatePasswordStrengthIndicator(strength);
+            });
+            
+            confirmPasswordInput.addEventListener('input', function() {
+                checkPasswordMatch();
+            });
+
+            // Add loading state to submit button
+            const form = document.querySelector('.register-form');
+            form.addEventListener('submit', function(e) {
+                if (!document.getElementById('termsCheck').checked) {
+                    e.preventDefault();
+                    alert('Please agree to the Terms of Service and Privacy Policy');
+                    return;
+                }
+                
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating Account...';
+                submitBtn.disabled = true;
+                
+                // Re-enable after 5 seconds (in case of error)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 5000);
+            });
+        });
+
+        function getPasswordStrength(password) {
+            let score = 0;
+            
+            if (password.length >= 8) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+            
+            if (score <= 2) return 'weak';
+            if (score <= 3) return 'medium';
+            return 'strong';
+        }
+
+        function updatePasswordStrengthIndicator(strength) {
+            const passwordInput = document.getElementById('passwordInput');
+            let existingIndicator = passwordInput.parentElement.querySelector('.password-strength');
+            
+            if (!existingIndicator) {
+                existingIndicator = document.createElement('div');
+                existingIndicator.className = 'password-strength mt-2';
+                passwordInput.parentElement.appendChild(existingIndicator);
+            }
+            
+            const colors = {
+                weak: '#dc3545',
+                medium: '#ffc107',
+                strong: '#198754'
+            };
+            
+            const labels = {
+                weak: 'Weak Password',
+                medium: 'Medium Password',
+                strong: 'Strong Password'
+            };
+            
+            existingIndicator.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="strength-bar me-2" style="width: 60px; height: 4px; background: #e9ecef; border-radius: 2px; overflow: hidden;">
+                        <div class="strength-fill" style="width: ${strength === 'weak' ? '33%' : strength === 'medium' ? '66%' : '100%'}; height: 100%; background: ${colors[strength]}; transition: all 0.3s ease;"></div>
+                    </div>
+                    <small class="text-${strength === 'weak' ? 'danger' : strength === 'medium' ? 'warning' : 'success'} fw-medium">${labels[strength]}</small>
+                </div>
+            `;
+        }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('passwordInput').value;
+            const confirmPassword = document.getElementById('confirmPasswordInput').value;
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                confirmPasswordInput.classList.add('is-invalid');
+                confirmPasswordInput.classList.remove('is-valid');
+            } else if (confirmPassword && password === confirmPassword) {
+                confirmPasswordInput.classList.remove('is-invalid');
+                confirmPasswordInput.classList.add('is-valid');
+            } else {
+                confirmPasswordInput.classList.remove('is-invalid', 'is-valid');
+            }
+        }
+    </script>
+    
+    <style>
+        .register-page {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-card {
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .register-icon {
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @@keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .form-floating {
+            position: relative;
+        }
+        
+        .form-floating .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            height: 60px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-floating .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .form-floating .form-control:focus + label {
+            color: #28a745;
+        }
+        
+        .form-floating .form-control.is-valid {
+            border-color: #28a745;
+        }
+        
+        .form-floating .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .form-floating label {
+            padding: 20px 15px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .form-floating.focused label {
+            color: #28a745;
+        }
+        
+        .btn {
+            border-radius: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+        }
+        
+        .btn-outline-secondary {
+            border: 2px solid #e9ecef;
+            color: #6c757d;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+        
+        .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        
+        .background-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .shape-1 {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 180px;
+            height: 180px;
+            top: 50%;
+            right: 12%;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            bottom: 25%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+        
+        .shape-4 {
+            width: 140px;
+            height: 140px;
+            top: 70%;
+            left: 5%;
+            animation-delay: 6s;
+        }
+        
+        @@keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-25px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+        
+        .alert {
+            border-radius: 15px;
+            border: none;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+        
+        .text-success {
+            color: #28a745 !important;
+        }
+        
+        .text-decoration-none:hover {
+            text-decoration: underline !important;
+        }
+        
+        .password-strength {
+            font-size: 0.875rem;
+        }
+        
+        .strength-bar {
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            transition: all 0.3s ease;
+        }
+        
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .register-card {
+                margin: 20px;
+            }
+            
+            .card-body {
+                padding: 2rem !important;
+            }
+            
+            .floating-shape {
+                display: none;
+            }
+        }
+        
+        /* Loading animation */
+        .spinner-border {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        /* Focus ring for accessibility */
+        .form-control:focus,
+        .btn:focus,
+        .form-check-input:focus {
+            outline: none;
+        }
+        
+        /* Custom validation styles */
+        .form-control.is-valid:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        
+        .form-control.is-invalid:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+    </style>
+}
