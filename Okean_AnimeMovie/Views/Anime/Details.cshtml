@@ -1,0 +1,171 @@
+@model Okean_AnimeMovie.Core.Entities.Anime
+
+@{
+    ViewData["Title"] = Model.Title;
+    bool isFavorite = ViewBag.IsFavorite == true;
+
+    string? rawTrailer = Model.Trailer;
+    string? embedTrailer = null;
+    if (!string.IsNullOrWhiteSpace(rawTrailer))
+    {
+        try
+        {
+            var uri = new Uri(rawTrailer);
+            var host = uri.Host.ToLowerInvariant();
+
+            if (host.Contains("youtube.com") || host.Contains("youtu.be"))
+            {
+                // Handle various YouTube formats -> https://www.youtube.com/embed/{id}
+                string? videoId = null;
+                if (host.Contains("youtu.be"))
+                {
+                    // https://youtu.be/{id}
+                    videoId = uri.AbsolutePath.Trim('/');
+                }
+                else if (uri.AbsolutePath.StartsWith("/watch", StringComparison.OrdinalIgnoreCase))
+                {
+                    var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                    videoId = query.Get("v");
+                }
+                else if (uri.AbsolutePath.StartsWith("/embed/", StringComparison.OrdinalIgnoreCase))
+                {
+                    videoId = uri.AbsolutePath.Replace("/embed/", string.Empty).Trim('/');
+                }
+
+                if (!string.IsNullOrWhiteSpace(videoId))
+                {
+                    embedTrailer = $"https://www.youtube.com/embed/{videoId}";
+                }
+            }
+            else if (host.Contains("drive.google.com"))
+            {
+                // Convert Google Drive file link to preview: https://drive.google.com/file/d/{id}/preview
+                // Support /file/d/{id}/view?usp=sharing → /preview
+                var path = uri.AbsolutePath;
+                var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var idx = Array.FindIndex(parts, p => p.Equals("d", StringComparison.OrdinalIgnoreCase));
+                if (idx >= 0 && idx + 1 < parts.Length)
+                {
+                    var fileId = parts[idx + 1];
+                    embedTrailer = $"https://drive.google.com/file/d/{fileId}/preview";
+                }
+            }
+            else
+            {
+                // Fallback: try original URL (some providers allow embedding directly)
+                embedTrailer = rawTrailer;
+            }
+        }
+        catch { /* ignore parse issues and leave embedTrailer null */ }
+    }
+}
+
+<div class="container my-4">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 420px;">
+                    @if (!string.IsNullOrEmpty(Model.Poster))
+                    {
+                        <img src="@Model.Poster" class="img-fluid" alt="@Model.Title" style="max-height: 100%;">
+                    }
+                    else
+                    {
+                        <i class="bi bi-image text-light display-4"></i>
+                    }
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    @if (!string.IsNullOrEmpty(Model.AlternativeTitle))
+                    {
+                        <p class="text-muted mb-2">@Model.AlternativeTitle</p>
+                    }
+                    <div class="mb-2">
+                        @foreach (var ag in Model.AnimeGenres)
+                        {
+                            <span class="badge bg-primary me-1">@ag.Genre.Name</span>
+                        }
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge bg-info">@Model.Type</span>
+                        <small class="text-muted">@Model.ReleaseYear</small>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <span>@Model.Rating.ToString("F1")</span>
+                        </div>
+                        <small class="text-muted">@Model.ViewCount views</small>
+                    </div>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-action="@(isFavorite ? "RemoveFromFavorites" : "AddToFavorites")" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn @(isFavorite ? "btn-outline-danger" : "btn-outline-primary") w-100">
+                                <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart") me-2"></i>
+                                @(isFavorite ? "Remove from Favorites" : "Add to Favorites")
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary w-100">Login to favorite</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Overview</h5>
+                    <p class="mb-0">@Model.Description</p>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Trailer))
+            {
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="mb-3">Trailer</h5>
+                        @if (!string.IsNullOrWhiteSpace(embedTrailer))
+                        {
+                            <div class="ratio ratio-16x9">
+                                <iframe src="@embedTrailer" title="Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <div>
+                                    This provider does not allow embedding. You can open the trailer directly:
+                                    <a href="@Model.Trailer" target="_blank" rel="noopener">Open trailer</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">Episodes</h5>
+                    @if (Model.Episodes.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var ep in Model.Episodes.OrderBy(e => e.EpisodeNumber))
+                            {
+                                <a asp-action="Watch" asp-route-animeId="@Model.Id" asp-route-episodeNumber="@ep.EpisodeNumber" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span>Episode @ep.EpisodeNumber - @ep.Title</span>
+                                    <i class="bi bi-play-circle"></i>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No episodes yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

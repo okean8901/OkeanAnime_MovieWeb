@@ -59,6 +59,16 @@ public class AnimeController : Controller
                 return NotFound();
             }
 
+            if (User?.Identity?.IsAuthenticated == true)
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var isFav = await _favoriteRepository.IsFavoriteAsync(userId, id);
+                    ViewBag.IsFavorite = isFav;
+                }
+            }
+
             // Increment view count
             await _animeRepository.IncrementViewCountAsync(id);
 
