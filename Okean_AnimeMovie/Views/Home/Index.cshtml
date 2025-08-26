@@ -1,34 +1,34 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Trang chủ";
 }
 
 <!-- Hero Section -->
 <div class="hero-section position-relative overflow-hidden">
-    <div class="hero-bg position-absolute w-100 h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+            <div class="hero-bg position-absolute w-100 h-100" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);"></div>
     <div class="hero-overlay position-absolute w-100 h-100" style="background: rgba(0,0,0,0.4);"></div>
     
     <div class="container position-relative py-5">
         <div class="row align-items-center min-vh-75">
             <div class="col-lg-6 text-white">
                 <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInUp">
-                    Welcome to <span class="text-warning">Okean Anime</span>
+                    Chào mừng đến với <span class="text-warning">Okean Anime</span>
                 </h1>
                 <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">
-                    Discover and watch your favorite anime series and movies. From classic hits to the latest releases, 
-                    we've got everything you need for your anime journey.
+                    Khám phá và xem những bộ anime yêu thích của bạn. Từ những tác phẩm kinh điển đến những bộ phim mới nhất, 
+                    chúng tôi có tất cả những gì bạn cần cho hành trình anime của mình.
                 </p>
                 <div class="d-flex gap-3 animate__animated animate__fadeInUp animate__delay-2s">
                     <a asp-controller="Anime" asp-action="Index" class="btn btn-warning btn-lg px-4 py-3 shadow-lg">
-                        <i class="bi bi-play-circle me-2"></i>Browse Anime
+                        <i class="bi bi-play-circle me-2"></i>Duyệt Anime
                     </a>
                     <a asp-controller="Anime" asp-action="Trending" class="btn btn-outline-light btn-lg px-4 py-3 border-2">
-                        <i class="bi bi-fire me-2"></i>Trending Now
+                        <i class="bi bi-fire me-2"></i>Thịnh hành
                     </a>
                 </div>
             </div>
             <div class="col-lg-6 text-center animate__animated animate__fadeInRight animate__delay-1s">
                 <div class="hero-icon-container">
-                    <i class="bi bi-play-circle-fill display-1 text-warning hero-icon"></i>
+                    <img src="~/img/logo.jpg" alt="Logo" style="width: 300px; height: 300px; border-radius: 5px;">
                 </div>
             </div>
         </div>
@@ -40,9 +40,9 @@
     <section class="mb-5">
         <div class="section-header text-center mb-5">
             <h2 class="display-6 fw-bold text-gradient">
-                <i class="bi bi-collection text-primary me-3"></i>Popular Genres
+                <i class="bi bi-collection text-primary me-3"></i>Thể loại phổ biến
             </h2>
-            <p class="lead text-muted">Explore anime by your favorite genres</p>
+            <p class="lead text-muted">Khám phá anime theo thể loại yêu thích của bạn</p>
         </div>
         
         <div class="row g-4">
@@ -51,10 +51,10 @@
                     <div class="genre-icon mb-3">
                         <i class="bi bi-lightning-charge text-white display-4"></i>
                     </div>
-                    <h4 class="text-white fw-bold mb-2">Action</h4>
-                    <p class="text-white-50 mb-3">Epic battles and thrilling adventures</p>
+                    <h4 class="text-white fw-bold mb-2">Hành động</h4>
+                    <p class="text-white-50 mb-3">Những trận chiến hoành tráng và cuộc phiêu lưu gay cấn</p>
                     <a asp-controller="Anime" asp-action="Index" asp-route-genreId="1" class="btn btn-light btn-sm">
-                        Explore Action
+                        Khám phá Hành động
                     </a>
                 </div>
             </div>
@@ -64,10 +64,10 @@
                     <div class="genre-icon mb-3">
                         <i class="bi bi-heart text-white display-4"></i>
                     </div>
-                    <h4 class="text-white fw-bold mb-2">Romance</h4>
-                    <p class="text-white-50 mb-3">Beautiful love stories and relationships</p>
+                    <h4 class="text-white fw-bold mb-2">Lãng mạn</h4>
+                    <p class="text-white-50 mb-3">Những câu chuyện tình yêu đẹp và mối quan hệ</p>
                     <a asp-controller="Anime" asp-action="Index" asp-route-genreId="2" class="btn btn-light btn-sm">
-                        Explore Romance
+                        Khám phá Lãng mạn
                     </a>
                 </div>
             </div>
@@ -77,10 +77,10 @@
                     <div class="genre-icon mb-3">
                         <i class="bi bi-emoji-laughing text-white display-4"></i>
                     </div>
-                    <h4 class="text-white fw-bold mb-2">Comedy</h4>
-                    <p class="text-white-50 mb-3">Hilarious moments and funny characters</p>
+                    <h4 class="text-white fw-bold mb-2">Hài hước</h4>
+                    <p class="text-white-50 mb-3">Những khoảnh khắc hài hước và nhân vật vui nhộn</p>
                     <a asp-controller="Anime" asp-action="Index" asp-route-genreId="3" class="btn btn-light btn-sm">
-                        Explore Comedy
+                        Khám phá Hài hước
                     </a>
                 </div>
             </div>
@@ -91,9 +91,9 @@
                         <i class="bi bi-stars text-white display-4"></i>
                     </div>
                     <h4 class="text-white fw-bold mb-2">Fantasy</h4>
-                    <p class="text-white-50 mb-3">Magical worlds and supernatural powers</p>
+                    <p class="text-white-50 mb-3">Thế giới phép thuật và sức mạnh siêu nhiên</p>
                     <a asp-controller="Anime" asp-action="Index" asp-route-genreId="4" class="btn btn-light btn-sm">
-                        Explore Fantasy
+                        Khám phá Fantasy
                     </a>
                 </div>
             </div>
@@ -101,7 +101,7 @@
         
         <div class="text-center mt-4">
             <a asp-controller="Genres" asp-action="Index" class="btn btn-outline-primary btn-lg px-5">
-                <i class="bi bi-arrow-right me-2"></i>View All Genres
+                <i class="bi bi-arrow-right me-2"></i>Xem tất cả thể loại
             </a>
         </div>
     </section>
@@ -110,9 +110,9 @@
     <section class="mb-5">
         <div class="section-header text-center mb-5">
             <h2 class="display-6 fw-bold text-gradient">
-                <i class="bi bi-star text-warning me-3"></i>Top Rated Anime
+                <i class="bi bi-star text-warning me-3"></i>Anime đánh giá cao
             </h2>
-            <p class="lead text-muted">Highest rated anime by our community</p>
+            <p class="lead text-muted">Những anime được đánh giá cao nhất bởi cộng đồng</p>
         </div>
         
         <div class="row g-4">
@@ -126,14 +126,14 @@
                         </div>
                         <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
                             <h5 class="mb-1">Fullmetal Alchemist</h5>
-                            <small class="text-light">Action • Adventure • Drama</small>
+                            <small class="text-light">Hành động • Phiêu lưu • Drama</small>
                         </div>
                     </div>
                     <div class="card-body text-center">
-                        <p class="text-muted mb-3">Epic alchemy adventure</p>
+                        <p class="text-muted mb-3">Cuộc phiêu lưu giả kim thuật hoành tráng</p>
                         <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-primary btn-sm">Watch Now</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm">Details</a>
+                            <a href="#" class="btn btn-primary btn-sm">Xem ngay</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm">Chi tiết</a>
                         </div>
                     </div>
                 </div>
@@ -149,14 +149,14 @@
                         </div>
                         <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
                             <h5 class="mb-1">Death Note</h5>
-                            <small class="text-light">Thriller • Mystery • Supernatural</small>
+                            <small class="text-light">Thriller • Bí ẩn • Siêu nhiên</small>
                         </div>
                     </div>
                     <div class="card-body text-center">
-                        <p class="text-muted mb-3">Psychological thriller</p>
+                        <p class="text-muted mb-3">Thriller tâm lý</p>
                         <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-primary btn-sm">Watch Now</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm">Details</a>
+                            <a href="#" class="btn btn-primary btn-sm">Xem ngay</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm">Chi tiết</a>
                         </div>
                     </div>
                 </div>
@@ -172,14 +172,14 @@
                         </div>
                         <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
                             <h5 class="mb-1">Steins;Gate</h5>
-                            <small class="text-light">Sci-Fi • Thriller • Romance</small>
+                            <small class="text-light">Khoa học viễn tưởng • Thriller • Lãng mạn</small>
                         </div>
                     </div>
                     <div class="card-body text-center">
-                        <p class="text-muted mb-3">Time travel mystery</p>
+                        <p class="text-muted mb-3">Bí ẩn du hành thời gian</p>
                         <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-primary btn-sm">Watch Now</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm">Details</a>
+                            <a href="#" class="btn btn-primary btn-sm">Xem ngay</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm">Chi tiết</a>
                         </div>
                     </div>
                 </div>
@@ -190,8 +190,8 @@
     <!-- Features Section -->
     <section class="mb-5">
         <div class="section-header text-center mb-5">
-            <h2 class="display-6 fw-bold text-gradient">Why Choose Okean Anime?</h2>
-            <p class="lead text-muted">Your ultimate anime streaming destination</p>
+            <h2 class="display-6 fw-bold text-gradient">Tại sao chọn Okean Anime?</h2>
+            <p class="lead text-muted">Điểm đến xem anime trực tuyến lý tưởng của bạn</p>
         </div>
         
         <div class="row g-4">
@@ -202,8 +202,8 @@
                             <i class="bi bi-collection-play text-primary display-4"></i>
                         </div>
                     </div>
-                    <h4 class="fw-bold mb-3">Extensive Library</h4>
-                    <p class="text-muted">Access thousands of anime series and movies from various genres and years, from classic hits to the latest releases.</p>
+                    <h4 class="fw-bold mb-3">Thư viện phong phú</h4>
+                    <p class="text-muted">Truy cập hàng nghìn bộ anime và phim hoạt hình từ nhiều thể loại và năm khác nhau, từ những tác phẩm kinh điển đến những bộ phim mới nhất.</p>
                 </div>
             </div>
             
@@ -214,10 +214,10 @@
                             <i class="bi bi-heart text-danger display-4"></i>
                         </div>
                     </div>
-                    <h4 class="fw-bold mb-3">Personalized Experience</h4>
-                    <p class="text-muted">Create your own watchlist, get personalized recommendations, and track your favorite anime series.</p>
+                    <h4 class="fw-bold mb-3">Trải nghiệm cá nhân hóa</h4>
+                    <p class="text-muted">Tạo danh sách xem riêng, nhận đề xuất cá nhân hóa và theo dõi những bộ anime yêu thích của bạn.</p>
                 </div>
-</div>
+            </div>
             
             <div class="col-lg-4 text-center">
                 <div class="feature-card p-4 h-100">
@@ -226,8 +226,8 @@
                             <i class="bi bi-device-hdd text-success display-4"></i>
                         </div>
                     </div>
-                    <h4 class="fw-bold mb-3">High Quality Streaming</h4>
-                    <p class="text-muted">Enjoy anime in high quality with multiple streaming options, including HLS and embedded video support.</p>
+                    <h4 class="fw-bold mb-3">Phát trực tuyến chất lượng cao</h4>
+                    <p class="text-muted">Thưởng thức anime với chất lượng cao và nhiều tùy chọn phát trực tuyến, bao gồm hỗ trợ HLS và video nhúng.</p>
                 </div>
             </div>
         </div>
@@ -239,25 +239,25 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-item">
                     <h3 class="display-4 fw-bold text-primary mb-2">1000+</h3>
-                    <p class="text-muted mb-0">Anime Series</p>
+                    <p class="text-muted mb-0">Bộ Anime</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-item">
                     <h3 class="display-4 fw-bold text-success mb-2">50+</h3>
-                    <p class="text-muted mb-0">Genres</p>
+                    <p class="text-muted mb-0">Thể loại</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-item">
                     <h3 class="display-4 fw-bold text-warning mb-2">10K+</h3>
-                    <p class="text-muted mb-0">Episodes</p>
+                    <p class="text-muted mb-0">Tập phim</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-item">
                     <h3 class="display-4 fw-bold text-danger mb-2">100K+</h3>
-                    <p class="text-muted mb-0">Happy Users</p>
+                    <p class="text-muted mb-0">Người dùng hài lòng</p>
                 </div>
             </div>
         </div>
@@ -269,14 +269,14 @@
     <div class="container">
         <div class="row justify-content-center text-center">
             <div class="col-lg-8">
-                <h3 class="fw-bold mb-3">Stay Updated!</h3>
-                <p class="mb-4">Get notified about new anime releases and updates</p>
+                <h3 class="fw-bold mb-3">Cập nhật!</h3>
+                <p class="mb-4">Nhận thông báo về anime mới và cập nhật</p>
                 <div class="row justify-content-center">
                     <div class="col-md-8 col-lg-6">
                         <div class="input-group">
-                            <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                            <input type="email" class="form-control form-control-lg" placeholder="Nhập email của bạn">
                             <button class="btn btn-warning btn-lg px-4" type="button">
-                                <i class="bi bi-envelope me-2"></i>Subscribe
+                                <i class="bi bi-envelope me-2"></i>Đăng ký
                             </button>
                         </div>
                     </div>
@@ -342,7 +342,7 @@
         }
         
         .text-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;

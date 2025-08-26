@@ -15,12 +15,12 @@
                     <option value="@i" selected="@(myRating.HasValue && myRating.Value == i)">@i</option>
                 }
             </select>
-            <button class="btn btn-sm btn-primary" onclick="submitRating(@Model.Id)">Rate</button>
+            <button class="btn btn-sm btn-primary" onclick="submitRating(@Model.Id)">Đánh giá</button>
         </div>
     }
     else
     {
-        <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-primary">Login to rate</a>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-primary">Đăng nhập để đánh giá</a>
     }
 </div>
 

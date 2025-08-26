@@ -1,7 +1,7 @@
 @model Okean_AnimeMovie.Core.Entities.Anime
 
 <div id="comments-container">
-    <h6 class="mb-3">Comments (@(Model.Comments?.Count ?? 0))</h6>
+    <h6 class="mb-3">Bình luận (@(Model.Comments?.Count ?? 0))</h6>
 
     <div class="list-group mb-3">
         @if (Model.Comments != null && Model.Comments.Any())
@@ -10,7 +10,7 @@
             {
                 <div class="list-group-item">
                     <div class="d-flex justify-content-between">
-                        <strong>@(c.User != null ? c.User.UserName : "User")</strong>
+                        <strong>@(c.User != null ? c.User.UserName : "Người dùng")</strong>
                         <small class="text-muted">@c.CreatedAt.ToLocalTime().ToString("g")</small>
                     </div>
                     <div>@c.Content</div>
@@ -19,7 +19,7 @@
         }
         else
         {
-            <div class="list-group-item text-muted">No comments yet.</div>
+            <div class="list-group-item text-muted">Chưa có bình luận nào.</div>
         }
     </div>
 
@@ -28,7 +28,7 @@
         <form id="commentForm" onsubmit="return submitComment(event);">
             <input type="hidden" id="animeId" value="@Model.Id" />
             <div class="input-group">
-                <input type="text" id="commentContent" class="form-control" placeholder="Write a comment..." required />
+                <input type="text" id="commentContent" class="form-control" placeholder="Viết bình luận..." required />
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-send"></i>
                 </button>
@@ -37,7 +37,7 @@
     }
     else
     {
-        <div class="alert alert-info">Please <a asp-controller="Account" asp-action="Login">login</a> to comment.</div>
+        <div class="alert alert-info">Vui lòng <a asp-controller="Account" asp-action="Login">đăng nhập</a> để bình luận.</div>
     }
 </div>
 

@@ -1,7 +1,7 @@
 @model IEnumerable<Okean_AnimeMovie.Core.Entities.Anime>
 
 @{
-    ViewData["Title"] = "Anime Library";
+    ViewData["Title"] = "Thư viện Anime";
 }
 
 <!-- Hero Banner -->
@@ -10,9 +10,9 @@
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <h1 class="display-4 fw-bold mb-3">
-                    <i class="bi bi-collection-play me-3"></i>Anime Library
+                    <i class="bi bi-collection-play me-3"></i>Thư viện Anime
                 </h1>
-                <p class="lead mb-4">Discover thousands of anime series and movies from around the world</p>
+                <p class="lead mb-4">Khám phá hàng nghìn bộ anime và phim hoạt hình từ khắp nơi trên thế giới</p>
             </div>
             <div class="col-lg-4 text-center">
                 <div class="hero-icon-container">
@@ -37,10 +37,10 @@
                                         <i class="bi bi-search"></i>
                                     </span>
                                     <input type="text" name="searchTerm" class="form-control form-control-lg border-0" 
-                                           placeholder="Search anime by title, genre, or description..." 
+                                           placeholder="Tìm kiếm anime theo tên, thể loại hoặc mô tả..." 
                                            value="@ViewBag.SearchTerm">
                                     <button type="submit" class="btn btn-primary btn-lg px-4">
-                                        <i class="bi bi-search me-2"></i>Search
+                                        <i class="bi bi-search me-2"></i>Tìm kiếm
                                     </button>
                                 </div>
                             </form>
@@ -50,7 +50,7 @@
                         <div class="row g-2">
                             <div class="col-6">
                                 <select name="genreId" class="form-select form-select-lg" onchange="this.form.submit()">
-                                    <option value="">All Genres</option>
+                                    <option value="">Tất cả thể loại</option>
                                     @if (ViewBag.Genres != null)
                                     {
                                         foreach (var genre in ViewBag.Genres)
@@ -63,7 +63,7 @@
                             </div>
                             <div class="col-6">
                                 <select name="year" class="form-select form-select-lg" onchange="this.form.submit()">
-                                    <option value="">All Years</option>
+                                    <option value="">Tất cả năm</option>
                                     @for (int year = DateTime.Now.Year; year >= 1990; year--)
                                     {
                                         var selected = ViewBag.SelectedYear != null && ViewBag.SelectedYear.ToString() == year.ToString();
@@ -80,18 +80,18 @@
                 {
                     <div class="mt-4 pt-3 border-top">
                         <div class="d-flex align-items-center gap-2 flex-wrap">
-                            <small class="text-muted fw-bold">Active filters:</small>
+                            <small class="text-muted fw-bold">Bộ lọc đang hoạt động:</small>
                             @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
                             {
                                 <span class="badge bg-primary fs-6 px-3 py-2">
-                                    Search: @ViewBag.SearchTerm
+                                    Tìm kiếm: @ViewBag.SearchTerm
                                     <a href="@Url.Action("Index", new { genreId = ViewBag.SelectedGenreId, year = ViewBag.SelectedYear })" 
                                        class="text-white text-decoration-none ms-2">×</a>
                                 </span>
                             }
                             @if (ViewBag.SelectedGenreId != null)
                             {
-                                string genreName = "Unknown";
+                                string genreName = "Không xác định";
                                 if (ViewBag.Genres != null)
                                 {
                                     foreach (var g in ViewBag.Genres)
@@ -104,7 +104,7 @@
                                     }
                                 }
                                 <span class="badge bg-success fs-6 px-3 py-2">
-                                    Genre: @genreName
+                                    Thể loại: @genreName
                                     <a href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, year = ViewBag.SelectedYear })" 
                                        class="text-white text-decoration-none ms-2">×</a>
                                 </span>
@@ -112,13 +112,13 @@
                             @if (ViewBag.SelectedYear != null)
                             {
                                 <span class="badge bg-info fs-6 px-3 py-2">
-                                    Year: @ViewBag.SelectedYear
+                                    Năm: @ViewBag.SelectedYear
                                     <a href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, genreId = ViewBag.SelectedGenreId })" 
                                        class="text-white text-decoration-none ms-2">×</a>
                                 </span>
                             }
                             <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1"></i>Clear All
+                                <i class="bi bi-x-circle me-1"></i>Xóa tất cả
                             </a>
                         </div>
                     </div>
@@ -131,27 +131,27 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="h3 mb-1">
-                <i class="bi bi-collection me-2 text-primary"></i>Results
+                <i class="bi bi-collection me-2 text-primary"></i>Kết quả
             </h2>
             <p class="text-muted mb-0">
                 @if (Model.Any())
                 {
-                    <span>Showing @Model.Count() anime</span>
+                    <span>Hiển thị @Model.Count() anime</span>
                     @if (ViewBag.TotalPages > 1)
                     {
-                        <span> • Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+                        <span> • Trang @ViewBag.CurrentPage của @ViewBag.TotalPages</span>
                     }
                 }
                 else
                 {
-                    <span>No anime found</span>
+                    <span>Không tìm thấy anime</span>
                 }
             </p>
         </div>
         @if (User.IsInRole("Admin"))
         {
             <a asp-action="Create" class="btn btn-success btn-lg">
-                <i class="bi bi-plus-circle me-2"></i>Add New Anime
+                <i class="bi bi-plus-circle me-2"></i>Thêm Anime mới
             </a>
         }
     </div>
@@ -165,7 +165,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="card anime-card h-100 border-0 shadow-lg hover-lift">
                         <div class="card-img-top d-flex align-items-center justify-content-center position-relative" 
-                             style="height: 280px; background: linear-gradient(45deg, #667eea, #764ba2);">
+                             style="height: 280px; background: linear-gradient(45deg, #1e3a8a, #3b82f6);">
                             @if (!string.IsNullOrEmpty(anime.Poster))
                             {
                                 <img src="@anime.Poster" class="img-fluid" alt="@anime.Title" style="max-height: 100%; object-fit: cover;">
@@ -180,7 +180,7 @@
                                 <div class="d-flex gap-2">
                                     <a asp-action="Details" asp-route-id="@anime.Id" 
                                        class="btn btn-primary btn-sm">
-                                        <i class="bi bi-eye me-1"></i>View
+                                        <i class="bi bi-eye me-1"></i>Xem
                                     </a>
                                     @if (User.IsInRole("Admin"))
                                     {
@@ -225,7 +225,7 @@
                                     <i class="bi bi-star-fill text-warning me-1"></i>
                                     <span class="fw-bold">@anime.Rating.ToString("F1")</span>
                                 </div>
-                                <small class="text-muted">@anime.TotalEpisodes ep</small>
+                                <small class="text-muted">@anime.TotalEpisodes tập</small>
                             </div>
                             
                             <!-- Progress bar for rating -->
@@ -238,7 +238,7 @@
                             <div class="d-grid gap-2">
                                 <a asp-action="Details" asp-route-id="@anime.Id" 
                                    class="btn btn-outline-primary btn-sm hover-lift">
-                                    <i class="bi bi-eye me-1"></i>View Details
+                                    <i class="bi bi-eye me-1"></i>Xem chi tiết
                                 </a>
                                 @if (User.IsInRole("Admin"))
                                 {
@@ -308,14 +308,14 @@
             <div class="card border-0 shadow-lg">
                 <div class="card-body p-5">
                     <i class="bi bi-search display-1 text-muted mb-4"></i>
-                    <h3 class="text-muted mb-3">No anime found</h3>
-                    <p class="text-muted mb-4">Try adjusting your search criteria or browse our trending anime.</p>
+                    <h3 class="text-muted mb-3">Không tìm thấy anime</h3>
+                    <p class="text-muted mb-4">Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc duyệt anime thịnh hành của chúng tôi.</p>
                     <div class="d-flex gap-3 justify-content-center">
                         <a asp-action="Trending" class="btn btn-primary btn-lg">
-                            <i class="bi bi-fire me-2"></i>View Trending
+                            <i class="bi bi-fire me-2"></i>Xem thịnh hành
                         </a>
                         <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-lg">
-                            <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
+                            <i class="bi bi-arrow-clockwise me-2"></i>Xóa bộ lọc
                         </a>
                     </div>
                 </div>
@@ -330,22 +330,22 @@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                    <i class="bi bi-exclamation-triangle me-2"></i>Xác nhận xóa
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
                 <i class="bi bi-trash display-1 text-danger mb-3"></i>
-                <h6>Are you sure you want to delete "<span id="animeTitle" class="fw-bold"></span>"?</h6>
-                <p class="text-muted">This action cannot be undone and will remove all associated data.</p>
+                <h6>Bạn có chắc chắn muốn xóa "<span id="animeTitle" class="fw-bold"></span>"?</h6>
+                <p class="text-muted">Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan.</p>
             </div>
             <div class="modal-footer border-0 justify-content-center">
                 <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-2"></i>Cancel
+                    <i class="bi bi-x-circle me-2"></i>Hủy
                 </button>
                 <form id="deleteForm" method="post" class="d-inline">
                     <button type="submit" class="btn btn-danger btn-lg">
-                        <i class="bi bi-trash me-2"></i>Delete
+                        <i class="bi bi-trash me-2"></i>Xóa
                     </button>
                 </form>
             </div>
@@ -375,7 +375,7 @@
                 searchForm.addEventListener('submit', function() {
                     const searchBtn = this.querySelector('button[type="submit"]');
                     const originalText = searchBtn.innerHTML;
-                    searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
+                    searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang tìm...';
                     searchBtn.disabled = true;
                     
                     setTimeout(() => {
@@ -440,11 +440,11 @@
     
     <style>
         .hero-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
         }
         
         .bg-gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
         }
         
         .hero-icon-container {
@@ -500,19 +500,19 @@
             border-radius: 10px;
             margin: 0 2px;
             border: none;
-            color: #667eea;
+            color: #3b82f6;
             transition: all 0.3s ease;
         }
         
         .pagination .page-link:hover {
-            background-color: #667eea;
+            background-color: #3b82f6;
             color: white;
             transform: translateY(-2px);
         }
         
         .pagination .page-item.active .page-link {
-            background-color: #667eea;
-            border-color: #667eea;
+            background-color: #3b82f6;
+            border-color: #3b82f6;
         }
         
         .badge {
@@ -546,8 +546,8 @@
         }
         
         .form-select:focus, .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
         }
     </style>
 }

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,7 +24,7 @@
         <div class="container">
             <!-- Brand -->
             <a class="navbar-brand d-flex align-items-center fw-bold" asp-controller="Home" asp-action="Index">
-                <i class="bi bi-play-circle-fill text-warning me-2 display-6"></i>
+                <img src="~/img/logo.jpg" alt="Okean Anime Logo" class="me-2" style="height: 40px; width: auto;">
                 <span class="brand-text">Okean Anime</span>
             </a>
 
@@ -38,7 +38,7 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link fw-medium" asp-controller="Home" asp-action="Index">
-                            <i class="bi bi-house me-1"></i>Home
+                            <i class="bi bi-house me-1"></i>Trang chủ
                         </a>
                     </li>
                     <li class="nav-item">
@@ -48,12 +48,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fw-medium" asp-controller="Anime" asp-action="Trending">
-                            <i class="bi bi-fire me-1"></i>Trending
+                            <i class="bi bi-fire me-1"></i>Thịnh hành
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fw-medium" href="#">
-                            <i class="bi bi-heart me-1"></i>Favorites
+                            <i class="bi bi-heart me-1"></i>Yêu thích
                         </a>
                     </li>
                 </ul>
@@ -61,7 +61,7 @@
                 <!-- Search Form -->
                 <form class="d-flex me-3" role="search">
                     <div class="input-group">
-                        <input class="form-control border-0" type="search" placeholder="Search anime..." aria-label="Search">
+                        <input class="form-control border-0" type="search" placeholder="Tìm kiếm anime..." aria-label="Search">
                         <button class="btn btn-warning border-0" type="submit">
                             <i class="bi bi-search"></i>
                         </button>
@@ -85,12 +85,12 @@
             <div class="row g-4">
                 <!-- Company Info -->
                 <div class="col-lg-4">
-                    <div class="footer-brand mb-3">
-                        <i class="bi bi-play-circle-fill text-warning display-4 me-2"></i>
-                        <span class="h4 fw-bold">Okean Anime</span>
-                    </div>
+                                    <div class="footer-brand mb-3">
+                    <img src="~/img/logo.jpg" alt="Okean Anime Logo" class="me-2" style="height: 50px; width: auto; border-radius: 8px;">
+                    <span class="h4 fw-bold">Okean Anime</span>
+                </div>
                     <p class="text-muted mb-3">
-                        Your ultimate destination for anime streaming. Discover, watch, and enjoy thousands of anime series and movies.
+                        Điểm đến lý tưởng của bạn để xem anime trực tuyến. Khám phá, xem và thưởng thức hàng nghìn bộ anime và phim hoạt hình.
                     </p>
                     <div class="social-links">
                         <a href="#" class="btn btn-outline-light btn-sm me-2">
@@ -110,32 +110,32 @@
 
                 <!-- Quick Links -->
                 <div class="col-lg-2 col-md-6">
-                    <h6 class="fw-bold mb-3">Quick Links</h6>
+                    <h6 class="fw-bold mb-3">Liên kết nhanh</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <a href="#" class="text-muted text-decoration-none">About Us</a>
+                            <a href="#" class="text-muted text-decoration-none">Về chúng tôi</a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-muted text-decoration-none">Contact</a>
+                            <a href="#" class="text-muted text-decoration-none">Liên hệ</a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-muted text-decoration-none">Privacy Policy</a>
+                            <a href="#" class="text-muted text-decoration-none">Chính sách bảo mật</a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+                            <a href="#" class="text-muted text-decoration-none">Điều khoản dịch vụ</a>
                         </li>
                     </ul>
                 </div>
 
                 <!-- Categories -->
                 <div class="col-lg-2 col-md-6">
-                    <h6 class="fw-bold mb-3">Categories</h6>
+                    <h6 class="fw-bold mb-3">Thể loại</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <a href="#" class="text-muted text-decoration-none">Action</a>
+                            <a href="#" class="text-muted text-decoration-none">Hành động</a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-muted text-decoration-none">Comedy</a>
+                            <a href="#" class="text-muted text-decoration-none">Hài hước</a>
                         </li>
                         <li class="mb-2">
                             <a href="#" class="text-muted text-decoration-none">Drama</a>
@@ -148,10 +148,10 @@
 
                 <!-- Newsletter -->
                 <div class="col-lg-4">
-                    <h6 class="fw-bold mb-3">Stay Updated</h6>
-                    <p class="text-muted mb-3">Get notified about new anime releases and updates.</p>
+                    <h6 class="fw-bold mb-3">Cập nhật</h6>
+                    <p class="text-muted mb-3">Nhận thông báo về anime mới và cập nhật.</p>
                     <div class="input-group">
-                        <input type="email" class="form-control" placeholder="Enter your email">
+                        <input type="email" class="form-control" placeholder="Nhập email của bạn">
                         <button class="btn btn-warning" type="button">
                             <i class="bi bi-envelope"></i>
                         </button>
@@ -164,12 +164,12 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <p class="mb-0 text-muted">
-                        &copy; 2024 Okean Anime. All rights reserved.
+                        &copy; 2024 Okean Anime. Tất cả quyền được bảo lưu.
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p class="mb-0 text-muted">
-                        Made with <i class="bi bi-heart-fill text-danger"></i> for anime lovers
+                        Được tạo với <i class="bi bi-heart-fill text-danger"></i> cho những người yêu anime
                     </p>
                 </div>
             </div>
@@ -177,7 +177,7 @@
     </footer>
 
     <!-- Back to Top Button -->
-    <button id="backToTop" class="btn btn-primary back-to-top" title="Back to top">
+    <button id="backToTop" class="btn btn-primary back-to-top" title="Lên đầu trang">
         <i class="bi bi-arrow-up"></i>
     </button>
 
@@ -236,7 +236,7 @@
                 const searchBtn = this.querySelector('button[type="submit"]');
                 const originalHTML = searchBtn.innerHTML;
                 
-                searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
+                searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang tìm...';
                 searchBtn.disabled = true;
                 
                 // Simulate search delay
@@ -252,8 +252,8 @@
     
     <style>
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
             --accent-color: #ffc107;
             --success-color: #28a745;
             --danger-color: #dc3545;
@@ -274,7 +274,7 @@
         }
         
         .bg-gradient-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
         }
         
         .navbar {
@@ -284,17 +284,24 @@
         }
         
         .navbar-scrolled {
-            background: rgba(102, 126, 234, 0.95) !important;
+            background: rgba(30, 58, 138, 0.95) !important;
             backdrop-filter: blur(15px);
         }
         
         .navbar-brand {
             font-size: 1.5rem;
             transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .navbar-brand:hover {
             transform: scale(1.05);
+        }
+        
+        .navbar-brand img {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .brand-text {
@@ -310,6 +317,7 @@
             padding: 0.5rem 1rem !important;
             border-radius: 8px;
             margin: 0 0.25rem;
+            white-space: nowrap;
         }
         
         .nav-link:hover {
@@ -324,7 +332,7 @@
             left: 50%;
             width: 0;
             height: 2px;
-            background: var(--accent-color);
+            background: #3b82f6;
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
@@ -335,6 +343,14 @@
         
         .navbar-nav .nav-link.active::after {
             width: 80%;
+        }
+        
+        .navbar-nav {
+            flex-wrap: nowrap;
+        }
+        
+        .navbar-nav .nav-item {
+            flex-shrink: 0;
         }
         
         .input-group {
@@ -363,7 +379,7 @@
         }
 
         .footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             margin-top: auto;
         }
 
@@ -422,6 +438,10 @@
             
             .navbar-brand {
                 font-size: 1.25rem;
+            }
+            
+            .navbar-brand img {
+                height: 32px;
             }
             
             .input-group {

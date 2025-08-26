@@ -1,7 +1,7 @@
 @model Okean_AnimeMovie.Core.DTOs.CreateAnimeDto
 
 @{
-    ViewData["Title"] = "Create Anime";
+    ViewData["Title"] = "Tạo Anime";
     var genres = ViewBag.Genres as IEnumerable<Okean_AnimeMovie.Core.Entities.Genre> ?? Enumerable.Empty<Okean_AnimeMovie.Core.Entities.Genre>();
 }
 
@@ -10,7 +10,7 @@
         <div class="col-lg-10">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Create Anime</h5>
+                    <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Tạo Anime</h5>
                 </div>
                 <div class="card-body">
                     <form asp-action="Create" method="post">
@@ -19,59 +19,59 @@
                         <div class="row g-3">
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label asp-for="Title" class="form-label">Title</label>
+                                    <label asp-for="Title" class="form-label">Tiêu đề</label>
                                     <input asp-for="Title" class="form-control" />
                                     <span asp-validation-for="Title" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="AlternativeTitle" class="form-label">Alternative Title</label>
+                                    <label asp-for="AlternativeTitle" class="form-label">Tiêu đề thay thế</label>
                                     <input asp-for="AlternativeTitle" class="form-control" />
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="Description" class="form-label">Description</label>
+                                    <label asp-for="Description" class="form-label">Mô tả</label>
                                     <textarea asp-for="Description" class="form-control" rows="6"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label asp-for="Poster" class="form-label">Poster URL</label>
+                                    <label asp-for="Poster" class="form-label">URL Poster</label>
                                     <input asp-for="Poster" class="form-control" />
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="Trailer" class="form-label">Trailer URL</label>
+                                    <label asp-for="Trailer" class="form-label">URL Trailer</label>
                                     <input asp-for="Trailer" class="form-control" />
                                 </div>
                                 <div class="row g-2">
                                     <div class="col-md-6">
-                                        <label asp-for="ReleaseYear" class="form-label">Year</label>
+                                        <label asp-for="ReleaseYear" class="form-label">Năm</label>
                                         <input asp-for="ReleaseYear" class="form-control" type="number" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label asp-for="TotalEpisodes" class="form-label">Episodes</label>
+                                        <label asp-for="TotalEpisodes" class="form-label">Tập phim</label>
                                         <input asp-for="TotalEpisodes" class="form-control" type="number" />
                                     </div>
                                 </div>
                                 <div class="row g-2 mt-2">
                                     <div class="col-md-6">
-                                        <label asp-for="Status" class="form-label">Status</label>
+                                        <label asp-for="Status" class="form-label">Trạng thái</label>
                                         <select asp-for="Status" class="form-select">
-                                            <option>Ongoing</option>
-                                            <option>Completed</option>
-                                            <option>Upcoming</option>
+                                            <option>Đang phát sóng</option>
+                                            <option>Hoàn thành</option>
+                                            <option>Sắp ra mắt</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label asp-for="Type" class="form-label">Type</label>
+                                        <label asp-for="Type" class="form-label">Loại</label>
                                         <select asp-for="Type" class="form-select">
                                             <option>TV</option>
-                                            <option>Movie</option>
+                                            <option>Phim</option>
                                             <option>OVA</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <label class="form-label">Genres</label>
+                                <label class="form-label">Thể loại</label>
                                 <select asp-for="GenreIds" class="form-select" multiple size="6">
                                     @foreach (var g in genres)
                                     {
@@ -81,8 +81,8 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-end gap-2 mt-4">
-                            <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+                            <button type="submit" class="btn btn-primary">Tạo</button>
                         </div>
                     </form>
                 </div>
