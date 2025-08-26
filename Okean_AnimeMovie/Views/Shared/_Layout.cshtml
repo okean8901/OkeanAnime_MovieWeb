@@ -261,6 +261,8 @@
             --light-color: #f8f9fa;
         }
 
+        html, body { height: 100%; }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
@@ -270,7 +272,10 @@
         }
 
         .modern-layout {
-            padding-top: 76px; /* Account for fixed navbar */
+            padding-top: 66px; /* Account for fixed navbar */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         .bg-gradient-primary {
@@ -374,13 +379,14 @@
         }
         
         .main-content {
-            min-height: calc(100vh - 76px - 300px); /* Viewport height - navbar - footer */
-            padding-top: 0; /* Remove extra padding */
+            flex: 1 0 auto; /* Fill remaining space without hardcoded heights */
+            padding-top: 0;
+            padding-bottom: 2rem; /* small breathing room above footer */
+            min-height: auto;
         }
 
         .footer {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            margin-top: auto;
         }
 
         .footer-brand {
