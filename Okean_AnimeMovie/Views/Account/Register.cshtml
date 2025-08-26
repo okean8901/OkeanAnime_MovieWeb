@@ -10,7 +10,7 @@
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <!-- Register Card -->
                 <div class="card register-card border-0 shadow-lg">
-                    <div class="card-header bg-gradient-success text-white text-center py-4 border-0">
+                    <div class="card-header bg-gradient-primary text-white text-center py-4 border-0">
                         <div class="register-icon mb-3">
                             <img src="~/img/logo.jpg" alt="Logo" style="width: 80px; height: 80px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.3);">
                         </div>
@@ -95,7 +95,7 @@
 
                             <!-- Submit Button -->
                             <div class="d-grid mb-4">
-                                <button type="submit" class="btn btn-success btn-lg py-3 fw-bold">
+                                <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold">
                                     <i class="bi bi-person-plus me-2"></i>Tạo tài khoản
                                 </button>
                             </div>
@@ -124,7 +124,7 @@
                     <div class="card-footer bg-transparent text-center py-4 border-0">
                         <p class="mb-0">
                             Đã có tài khoản? 
-                            <a asp-action="Login" class="text-decoration-none fw-bold text-success">Đăng nhập tại đây</a>
+                            <a asp-action="Login" class="text-decoration-none fw-bold text-primary">Đăng nhập tại đây</a>
                         </p>
                     </div>
                 </div>
@@ -301,7 +301,7 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         }
         
-        .bg-gradient-success {
+        .bg-gradient-primary {
             background: transparent;
             color: #212529;
             border-bottom: 1px solid #eef2f7;
@@ -386,14 +386,14 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         
-        .btn-success {
+        .btn-primary {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             border: none;
             position: relative;
             overflow: hidden;
         }
-        
-        .btn-success::before {
+
+        .btn-primary::before {
             content: '';
             position: absolute;
             top: 0;
@@ -403,8 +403,8 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             transition: left 0.5s;
         }
-        
-        .btn-success:hover::before {
+
+        .btn-primary:hover::before {
             left: 100%;
         }
         
@@ -511,7 +511,7 @@
             border: 1px solid rgba(220, 53, 69, 0.3);
         }
         
-        .text-success {
+        .text-primary {
             color: #3b82f6 !important;
             font-weight: 600;
         }

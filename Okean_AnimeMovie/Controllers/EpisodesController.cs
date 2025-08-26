@@ -86,4 +86,48 @@ public class EpisodesController : Controller
         TempData["Success"] = "Episode deleted.";
         return RedirectToAction(nameof(Index), new { animeId = ep.AnimeId });
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> MoveUp(int id)
+    {
+        var current = await _episodeRepository.GetByIdAsync(id);
+        if (current == null) return NotFound();
+        var all = await _episodeRepository.GetAllAsync();
+        var prev = all.Where(e => e.AnimeId == current.AnimeId && e.EpisodeNumber < current.EpisodeNumber)
+                      .OrderByDescending(e => e.EpisodeNumber)
+                      .FirstOrDefault();
+        if (prev != null)
+        {
+            var tmp = current.EpisodeNumber;
+            current.EpisodeNumber = prev.EpisodeNumber;
+            prev.EpisodeNumber = tmp;
+            await _episodeRepository.UpdateAsync(prev);
+            await _episodeRepository.UpdateAsync(current);
+            TempData["Success"] = $"Moved episode {current.Title} up.";
+        }
+        return RedirectToAction(nameof(Index), new { animeId = current.AnimeId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> MoveDown(int id)
+    {
+        var current = await _episodeRepository.GetByIdAsync(id);
+        if (current == null) return NotFound();
+        var all = await _episodeRepository.GetAllAsync();
+        var next = all.Where(e => e.AnimeId == current.AnimeId && e.EpisodeNumber > current.EpisodeNumber)
+                      .OrderBy(e => e.EpisodeNumber)
+                      .FirstOrDefault();
+        if (next != null)
+        {
+            var tmp = current.EpisodeNumber;
+            current.EpisodeNumber = next.EpisodeNumber;
+            next.EpisodeNumber = tmp;
+            await _episodeRepository.UpdateAsync(next);
+            await _episodeRepository.UpdateAsync(current);
+            TempData["Success"] = $"Moved episode {current.Title} down.";
+        }
+        return RedirectToAction(nameof(Index), new { animeId = current.AnimeId });
+    }
 }

@@ -22,12 +22,12 @@
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
+                    <a class="dropdown-item d-flex align-items-center" asp-controller="Favorites" asp-action="Index">
                         <i class="bi bi-heart me-2 text-danger"></i>Yêu thích của tôi
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
+                    <a class="dropdown-item d-flex align-items-center" asp-controller="Profile" asp-action="Settings">
                         <i class="bi bi-gear me-2 text-secondary"></i>Cài đặt hồ sơ
                     </a>
                 </li>
@@ -35,12 +35,17 @@
                 {
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
+                        <a class="dropdown-item d-flex align-items-center" asp-controller="Admin" asp-action="Dashboard">
                             <i class="bi bi-shield me-2 text-warning"></i>Bảng quản trị
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
+                        <a class="dropdown-item d-flex align-items-center" asp-controller="AdminComments" asp-action="Index">
+                            <i class="bi bi-chat-dots me-2 text-primary"></i>Duyệt bình luận
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" asp-controller="Admin" asp-action="Users">
                             <i class="bi bi-people me-2 text-info"></i>Quản lý người dùng
                         </a>
                     </li>
