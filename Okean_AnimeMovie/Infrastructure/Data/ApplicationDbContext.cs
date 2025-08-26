@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Favorite> Favorites { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Rating> Ratings { get; set; }
+    public DbSet<ViewCount> ViewCounts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -89,6 +90,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => new { e.UserId, e.AnimeId }).IsUnique();
             entity.Property(e => e.Score);
+        });
+
+        // Configure ViewCount entity
+        builder.Entity<ViewCount>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.IpAddress).IsRequired().HasMaxLength(45);
+            entity.Property(e => e.UserAgent).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Referrer).HasMaxLength(500);
+            entity.HasIndex(e => new { e.AnimeId, e.IpAddress, e.ViewedAt }).IsUnique();
         });
 
         // Configure ApplicationUser entity

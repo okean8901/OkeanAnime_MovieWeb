@@ -106,85 +106,23 @@
         </div>
     </section>
 
-    <!-- Top Rated Anime Section -->
+    <!-- Trending Sections -->
     <section class="mb-5">
         <div class="section-header text-center mb-5">
             <h2 class="display-6 fw-bold text-gradient">
-                <i class="bi bi-star text-warning me-3"></i>Anime đánh giá cao
+                <i class="bi bi-fire text-danger me-3"></i>Thịnh hành
             </h2>
-            <p class="lead text-muted">Những anime được đánh giá cao nhất bởi cộng đồng</p>
+            <p class="lead text-muted">Khám phá những anime đang được yêu thích nhất</p>
         </div>
         
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <div class="card top-rated-card h-100 border-0 shadow-lg hover-lift">
-                    <div class="card-img-top position-relative" style="height: 250px; background: linear-gradient(45deg, #6c5ce7, #a29bfe);">
-                        <div class="position-absolute top-0 start-0 m-3">
-                            <span class="badge bg-warning text-dark fs-6 px-3 py-2">
-                                <i class="bi bi-star-fill me-1"></i>9.8
-                            </span>
-                        </div>
-                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
-                            <h5 class="mb-1">Fullmetal Alchemist</h5>
-                            <small class="text-light">Hành động • Phiêu lưu • Drama</small>
-                        </div>
-                    </div>
-                    <div class="card-body text-center">
-                        <p class="text-muted mb-3">Cuộc phiêu lưu giả kim thuật hoành tráng</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-primary btn-sm">Xem ngay</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm">Chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="card top-rated-card h-100 border-0 shadow-lg hover-lift">
-                    <div class="card-img-top position-relative" style="height: 250px; background: linear-gradient(45deg, #e84393, #fd79a8);">
-                        <div class="position-absolute top-0 start-0 m-3">
-                            <span class="badge bg-warning text-dark fs-6 px-3 py-2">
-                                <i class="bi bi-star-fill me-1"></i>9.6
-                            </span>
-                        </div>
-                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
-                            <h5 class="mb-1">Death Note</h5>
-                            <small class="text-light">Thriller • Bí ẩn • Siêu nhiên</small>
-                        </div>
-                    </div>
-                    <div class="card-body text-center">
-                        <p class="text-muted mb-3">Thriller tâm lý</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-primary btn-sm">Xem ngay</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm">Chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="card top-rated-card h-100 border-0 shadow-lg hover-lift">
-                    <div class="card-img-top position-relative" style="height: 250px; background: linear-gradient(45deg, #00b894, #55a3ff);">
-                        <div class="position-absolute top-0 start-0 m-3">
-                            <span class="badge bg-warning text-dark fs-6 px-3 py-2">
-                                <i class="bi bi-star-fill me-1"></i>9.4
-                            </span>
-                        </div>
-                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
-                            <h5 class="mb-1">Steins;Gate</h5>
-                            <small class="text-light">Khoa học viễn tưởng • Thriller • Lãng mạn</small>
-                        </div>
-                    </div>
-                    <div class="card-body text-center">
-                        <p class="text-muted mb-3">Bí ẩn du hành thời gian</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-primary btn-sm">Xem ngay</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm">Chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Most Viewed -->
+        @await Component.InvokeAsync("Trending", new { type = Okean_AnimeMovie.Core.DTOs.TrendingType.MostViewed, count = 6 })
+        
+        <!-- Top Rated -->
+        @await Component.InvokeAsync("Trending", new { type = Okean_AnimeMovie.Core.DTOs.TrendingType.TopRated, count = 6 })
+        
+        <!-- Recently Added -->
+        @await Component.InvokeAsync("Trending", new { type = Okean_AnimeMovie.Core.DTOs.TrendingType.RecentlyAdded, count = 6 })
     </section>
 
     <!-- Features Section -->

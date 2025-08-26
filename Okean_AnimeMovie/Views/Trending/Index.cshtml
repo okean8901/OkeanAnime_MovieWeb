@@ -1,0 +1,254 @@
+@model IEnumerable<Okean_AnimeMovie.Core.DTOs.TrendingDto>
+@{
+    ViewData["Title"] = ViewBag.Title ?? "Thịnh hành";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-0 text-gradient">@ViewData["Title"]</h1>
+                    <p class="text-muted mb-0">@ViewBag.TotalCount anime được tìm thấy</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="MostViewed" class="btn btn-outline-primary btn-sm">Xem nhiều nhất</a>
+                    <a asp-action="TopRated" class="btn btn-outline-primary btn-sm">Đánh giá cao nhất</a>
+                    <a asp-action="MostCommented" class="btn btn-outline-primary btn-sm">Bình luận nhiều nhất</a>
+                    <a asp-action="MostFavorited" class="btn btn-outline-primary btn-sm">Yêu thích nhiều nhất</a>
+                    <a asp-action="RecentlyAdded" class="btn btn-outline-primary btn-sm">Mới thêm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Tìm kiếm</label>
+                            <input type="text" name="SearchTerm" class="form-control" placeholder="Tìm anime..." value="@ViewBag.Filter?.SearchTerm">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Thể loại</label>
+                            <select name="Genre" class="form-select" id="genreSelect">
+                                <option value="">Tất cả thể loại</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Năm</label>
+                            <select name="Year" class="form-select" id="yearSelect">
+                                <option value="">Tất cả năm</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Sắp xếp</label>
+                            <select name="Type" class="form-select">
+                                <option value="0" selected="@(ViewBag.Filter?.Type == null)">Mặc định</option>
+                                <option value="1" selected="@(ViewBag.Filter?.Type == Okean_AnimeMovie.Core.DTOs.TrendingType.MostViewed)">Xem nhiều nhất</option>
+                                <option value="2" selected="@(ViewBag.Filter?.Type == Okean_AnimeMovie.Core.DTOs.TrendingType.TopRated)">Đánh giá cao nhất</option>
+                                <option value="3" selected="@(ViewBag.Filter?.Type == Okean_AnimeMovie.Core.DTOs.TrendingType.MostCommented)">Bình luận nhiều nhất</option>
+                                <option value="4" selected="@(ViewBag.Filter?.Type == Okean_AnimeMovie.Core.DTOs.TrendingType.MostFavorited)">Yêu thích nhiều nhất</option>
+                                <option value="5" selected="@(ViewBag.Filter?.Type == Okean_AnimeMovie.Core.DTOs.TrendingType.RecentlyAdded)">Mới thêm gần đây</option>
+                                <option value="6" selected="@(ViewBag.Filter?.Type == Okean_AnimeMovie.Core.DTOs.TrendingType.RecentlyUpdated)">Cập nhật gần đây</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="bi bi-search me-1"></i>Tìm kiếm
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Làm mới
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Anime Grid -->
+    <div class="row g-4">
+        @if (Model.Any())
+        {
+            @foreach (var anime in Model)
+            {
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 anime-card" data-anime-id="@anime.Id">
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(anime.CoverImage) ? "/img/default-anime.jpg" : anime.CoverImage)" 
+                                 class="card-img-top rounded-top-4" alt="@anime.Title"
+                                 style="height: 280px; object-fit: cover;">
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge bg-primary">@anime.Type</span>
+                            </div>
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <div class="d-flex align-items-center bg-dark bg-opacity-75 rounded-pill px-2 py-1">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                    <small class="text-white">@anime.Rating.ToString("F1")</small>
+                                </div>
+                            </div>
+                            <div class="position-absolute bottom-0 start-0 end-0 p-3 bg-gradient-dark">
+                                <div class="d-flex justify-content-between align-items-center text-white small">
+                                    <span><i class="bi bi-eye me-1"></i>@anime.ViewCount</span>
+                                    <span><i class="bi bi-heart me-1"></i>@anime.FavoriteCount</span>
+                                    <span><i class="bi bi-chat me-1"></i>@anime.CommentCount</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title mb-2 line-clamp-2">@anime.Title</h6>
+                            <p class="card-text small text-muted line-clamp-2 mb-2">@anime.Description</p>
+                            <div class="mb-2">
+                                @foreach (var genre in anime.Genres.Take(2))
+                                {
+                                    <span class="badge bg-light text-dark me-1 small">@genre</span>
+                                }
+                                @if (anime.Genres.Length > 2)
+                                {
+                                    <span class="badge bg-light text-dark small">+@(anime.Genres.Length - 2)</span>
+                                }
+                            </div>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <small class="text-muted">@anime.ReleaseYear</small>
+                                    <small class="text-muted">@anime.LastUpdated.ToString("dd/MM/yyyy")</small>
+                                </div>
+                                <a asp-controller="Anime" asp-action="Details" asp-route-id="@anime.Id" 
+                                   class="btn btn-primary btn-sm w-100">
+                                    <i class="bi bi-play-circle me-1"></i>Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted mb-3"></i>
+                    <h4 class="text-muted">Không tìm thấy anime nào</h4>
+                    <p class="text-muted">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Trending pagination">
+                    <ul class="pagination justify-content-center">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = ViewBag.CurrentPage - 1, pageSize = ViewBag.Filter?.PageSize ?? 20, SearchTerm = ViewBag.Filter?.SearchTerm, Genre = ViewBag.Filter?.Genre, Year = ViewBag.Filter?.Year, Type = ViewBag.Filter?.Type })">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                        }
+
+                        @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = i, pageSize = ViewBag.Filter?.PageSize ?? 20, SearchTerm = ViewBag.Filter?.SearchTerm, Genre = ViewBag.Filter?.Genre, Year = ViewBag.Filter?.Year, Type = ViewBag.Filter?.Type })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = ViewBag.CurrentPage + 1, pageSize = ViewBag.Filter?.PageSize ?? 20, SearchTerm = ViewBag.Filter?.SearchTerm, Genre = ViewBag.Filter?.Genre, Year = ViewBag.Filter?.Year, Type = ViewBag.Filter?.Type })">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Load genres and years for filter dropdowns
+        $(document).ready(function() {
+            loadGenres();
+            loadYears();
+            
+            // Record view when anime card is clicked
+            $('.anime-card').on('click', function() {
+                const animeId = $(this).data('anime-id');
+                recordView(animeId);
+            });
+        });
+
+        function loadGenres() {
+            $.get('/Trending/GetGenres', function(genres) {
+                const select = $('#genreSelect');
+                genres.forEach(function(genre) {
+                    select.append(new Option(genre, genre));
+                });
+            });
+        }
+
+        function loadYears() {
+            $.get('/Trending/GetYears', function(years) {
+                const select = $('#yearSelect');
+                years.forEach(function(year) {
+                    select.append(new Option(year, year));
+                });
+            });
+        }
+
+        function recordView(animeId) {
+            $.post('/Trending/RecordView', { animeId: animeId })
+                .done(function(response) {
+                    if (response.success) {
+                        console.log('View recorded successfully');
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('Failed to record view:', error);
+                });
+        }
+    </script>
+}
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .bg-gradient-dark {
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    }
+
+    .anime-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .anime-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>

@@ -64,6 +64,8 @@ namespace Okean_AnimeMovie
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IAnimeRepository, AnimeRepository>();
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ITrendingRepository, TrendingRepository>();
 
             // Add Services
             builder.Services.AddScoped<IJwtService, JwtService>();

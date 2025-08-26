@@ -1,0 +1,109 @@
+@model Okean_AnimeMovie.ViewComponents.TrendingViewModel
+
+<div class="trending-section mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">
+            <i class="bi bi-fire text-danger me-2"></i>@Model.Title
+        </h5>
+        <a asp-controller="Trending" asp-action="@GetActionName(Model.Type)" class="btn btn-outline-primary btn-sm">
+            Xem tất cả <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+    
+    <div class="row g-3">
+        @foreach (var anime in Model.Anime.Take(6))
+        {
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                <div class="card border-0 shadow-sm rounded-3 h-100 trending-card" data-anime-id="@anime.Id">
+                    <div class="position-relative">
+                        <img src="@(string.IsNullOrEmpty(anime.CoverImage) ? "/img/default-anime.jpg" : anime.CoverImage)" 
+                             class="card-img-top rounded-top-3" alt="@anime.Title"
+                             style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-primary small">@anime.Type</span>
+                        </div>
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <div class="d-flex align-items-center bg-dark bg-opacity-75 rounded-pill px-2 py-1">
+                                <i class="bi bi-star-fill text-warning me-1"></i>
+                                <small class="text-white">@anime.Rating.ToString("F1")</small>
+                            </div>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 end-0 p-2 bg-gradient-dark">
+                            <div class="d-flex justify-content-between align-items-center text-white small">
+                                <span><i class="bi bi-eye me-1"></i>@anime.ViewCount</span>
+                                <span><i class="bi bi-heart me-1"></i>@anime.FavoriteCount</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-2">
+                        <h6 class="card-title small mb-1 line-clamp-1">@anime.Title</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">@anime.ReleaseYear</small>
+                            <small class="text-muted">@anime.CommentCount <i class="bi bi-chat"></i></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    private string GetActionName(Okean_AnimeMovie.Core.DTOs.TrendingType type)
+    {
+        return type switch
+        {
+            Okean_AnimeMovie.Core.DTOs.TrendingType.MostViewed => "MostViewed",
+            Okean_AnimeMovie.Core.DTOs.TrendingType.TopRated => "TopRated",
+            Okean_AnimeMovie.Core.DTOs.TrendingType.MostCommented => "MostCommented",
+            Okean_AnimeMovie.Core.DTOs.TrendingType.MostFavorited => "MostFavorited",
+            Okean_AnimeMovie.Core.DTOs.TrendingType.RecentlyAdded => "RecentlyAdded",
+            Okean_AnimeMovie.Core.DTOs.TrendingType.RecentlyUpdated => "RecentlyUpdated",
+            _ => "Index"
+        };
+    }
+}
+
+<style>
+    .line-clamp-1 {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .bg-gradient-dark {
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    }
+
+    .trending-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .trending-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        // Record view when trending card is clicked
+        $('.trending-card').on('click', function() {
+            const animeId = $(this).data('anime-id');
+            recordView(animeId);
+        });
+    });
+
+    function recordView(animeId) {
+        $.post('/Trending/RecordView', { animeId: animeId })
+            .done(function(response) {
+                if (response.success) {
+                    console.log('View recorded successfully');
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.error('Failed to record view:', error);
+            });
+    }
+</script>
