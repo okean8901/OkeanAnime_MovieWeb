@@ -149,15 +149,31 @@
                     </ul>
                 </div>
 
-                <!-- Newsletter -->
+                <!-- Contact & Feedback -->
                 <div class="col-lg-4">
-                    <h6 class="fw-bold mb-3">Cập nhật</h6>
-                    <p class="text-muted mb-3">Nhận thông báo về anime mới và cập nhật.</p>
-                    <div class="input-group">
-                        <input type="email" class="form-control" placeholder="Nhập email của bạn">
-                        <button class="btn btn-warning" type="button">
-                            <i class="bi bi-envelope"></i>
-                        </button>
+                    <h6 class="fw-bold mb-3">Liên hệ & Góp ý</h6>
+                    <p class="text-muted mb-3">Bạn có ý tưởng hoặc phát hiện lỗi? Hãy cho chúng tôi biết để cải thiện trải nghiệm tốt hơn.</p>
+                    <ul class="list-unstyled mb-3">
+                        <li class="mb-2">
+                            <i class="bi bi-envelope me-2"></i>
+                            <a href="mailto:support@okeananime.com" class="text-decoration-none text-muted">support@okeananime.com</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-discord me-2"></i>
+                            <a href="#" class="text-decoration-none text-muted">Tham gia cộng đồng Discord</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-bug me-2"></i>
+                            <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-muted">Báo cáo vấn đề</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2">
+                        <a asp-controller="Home" asp-action="Privacy" class="btn btn-outline-light btn-sm">
+                            Gửi phản hồi
+                        </a>
+                        <a asp-controller="Trending" asp-action="Index" class="btn btn-warning btn-sm">
+                            Khám phá thịnh hành
+                        </a>
                     </div>
                 </div>
             </div>
@@ -399,12 +415,18 @@
         .main-content {
             flex: 1 0 auto; /* Fill remaining space without hardcoded heights */
             padding-top: 0;
-            padding-bottom: 2rem; /* small breathing room above footer */
+            padding-bottom: 0; /* remove extra gap above footer */
             min-height: auto;
         }
 
         .footer {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding-top: 2rem !important; /* override py-5 */
+            padding-bottom: 2rem !important; /* override py-5 */
+        }
+
+        .footer hr {
+            margin: 1rem 0 !important; /* tighter spacing for divider */
         }
 
         .footer-brand {
