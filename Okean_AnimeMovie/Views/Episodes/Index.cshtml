@@ -10,6 +10,7 @@
         <div class="d-flex gap-2">
             <a class="btn btn-outline-secondary" asp-controller="Anime" asp-action="Details" asp-route-id="@anime?.Id">Back</a>
             <a class="btn btn-primary" asp-action="Create" asp-route-animeId="@anime?.Id"><i class="bi bi-plus-circle me-2"></i>Add Episode</a>
+            <a class="btn btn-success" asp-action="BulkAdd" asp-route-animeId="@anime?.Id"><i class="bi bi-plus-square-dotted me-2"></i>Bulk Add</a>
         </div>
     </div>
 

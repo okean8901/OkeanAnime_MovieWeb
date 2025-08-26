@@ -1,0 +1,42 @@
+@{
+    var anime = ViewBag.Anime as Okean_AnimeMovie.Core.Entities.Anime;
+    ViewData["Title"] = $"Thêm nhiều tập - {anime?.Title}";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h4 mb-0"><i class="bi bi-plus-square-dotted me-2"></i>Thêm nhiều tập - @anime?.Title</h2>
+        <div>
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-animeId="@anime?.Id">Quay lại</a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+            <form asp-action="BulkAdd" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="animeId" value="@anime?.Id" />
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Kiểu video mặc định</label>
+                        <select class="form-select" name="defaultVideoType">
+                            <option>Embed</option>
+                            <option>HLS</option>
+                            <option>Direct</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Dữ liệu tập (mỗi dòng 1 tập)</label>
+                        <textarea class="form-control" name="payload" rows="10" placeholder="1, Tựa đề tập 1, https://video-url-1, Embed, https://thumb.jpg, 1200
+2, Tựa đề tập 2, https://video-url-2
+3, Tựa đề tập 3, https://video-url-3, HLS"></textarea>
+                        <small class="text-muted">Định dạng: EpisodeNumber, Title, VideoUrl, [VideoType], [Thumbnail], [DurationSeconds]. Có thể dùng dấu phẩy hoặc tab. Các cột trong [] là tuỳ chọn.</small>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-2"></i>Nhập</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -28,6 +28,84 @@ public class EpisodesController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> BulkAdd(int animeId)
+    {
+        var anime = await _animeRepository.GetByIdAsync(animeId);
+        if (anime == null) return NotFound();
+        ViewBag.Anime = anime;
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> BulkAdd(int animeId, string payload, string? defaultVideoType)
+    {
+        var anime = await _animeRepository.GetByIdAsync(animeId);
+        if (anime == null) return NotFound();
+        ViewBag.Anime = anime;
+
+        if (string.IsNullOrWhiteSpace(payload))
+        {
+            ModelState.AddModelError(string.Empty, "Vui lòng nhập dữ liệu tập phim.");
+            return View();
+        }
+
+        var all = await _episodeRepository.GetAllAsync();
+        var existing = all.Where(e => e.AnimeId == animeId).ToDictionary(e => e.EpisodeNumber, e => e);
+
+        // Supported formats per line (comma or tab separated):
+        // 1,Title,https://video,Embed,Https://thumb.jpg,1200
+        // Columns: EpisodeNumber, Title, VideoUrl, [VideoType], [Thumbnail], [DurationSeconds]
+        int created = 0, updated = 0, skipped = 0;
+        var lines = payload.Replace("\r", string.Empty).Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var raw in lines)
+        {
+            var line = raw.Trim();
+            if (line.Length == 0) continue;
+            var parts = line.Contains('\t') ? line.Split('\t') : line.Split(',');
+            if (parts.Length < 3) { skipped++; continue; }
+
+            if (!int.TryParse(parts[0].Trim(), out int epNo)) { skipped++; continue; }
+            var title = parts[1].Trim();
+            var videoUrl = parts[2].Trim();
+            var videoType = (parts.Length >= 4 && !string.IsNullOrWhiteSpace(parts[3])) ? parts[3].Trim() : (defaultVideoType ?? "Embed");
+            var thumb = (parts.Length >= 5) ? parts[4].Trim() : null;
+            int? duration = null;
+            if (parts.Length >= 6 && int.TryParse(parts[5].Trim(), out int d)) duration = d;
+
+            if (existing.TryGetValue(epNo, out var ep))
+            {
+                ep.Title = title;
+                ep.VideoUrl = videoUrl;
+                ep.VideoType = videoType;
+                ep.Thumbnail = thumb;
+                if (duration.HasValue) ep.Duration = duration.Value;
+                await _episodeRepository.UpdateAsync(ep);
+                updated++;
+            }
+            else
+            {
+                var newEpisode = new Episode
+                {
+                    AnimeId = animeId,
+                    EpisodeNumber = epNo,
+                    Title = title,
+                    VideoUrl = videoUrl,
+                    VideoType = videoType,
+                    Thumbnail = thumb,
+                    Duration = duration ?? 0,
+                    CreatedAt = DateTime.UtcNow,
+                };
+                await _episodeRepository.AddAsync(newEpisode);
+                created++;
+            }
+        }
+
+        TempData["Success"] = $"Đã thêm {created}, cập nhật {updated}, bỏ qua {skipped}.";
+        return RedirectToAction(nameof(Index), new { animeId });
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Create(int animeId)
     {
         var anime = await _animeRepository.GetByIdAsync(animeId);
