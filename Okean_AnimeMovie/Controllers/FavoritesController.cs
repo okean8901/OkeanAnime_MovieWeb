@@ -40,4 +40,32 @@ public class FavoritesController : Controller
         await _favoriteRepository.RemoveFromFavoritesAsync(userId, animeId);
         return Redirect(Request.Headers["Referer"].ToString());
     }
+
+    // AJAX: Toggle favorite
+    [HttpPost]
+    [IgnoreAntiforgeryToken]
+    public async Task<IActionResult> Toggle(int animeId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var isFav = await _favoriteRepository.IsFavoriteAsync(userId, animeId);
+        if (isFav)
+        {
+            await _favoriteRepository.RemoveFromFavoritesAsync(userId, animeId);
+        }
+        else
+        {
+            await _favoriteRepository.AddToFavoritesAsync(userId, animeId);
+        }
+        var newCount = await _favoriteRepository.GetFavoriteCountAsync(userId);
+        return Json(new { success = true, isFavorite = !isFav, count = newCount });
+    }
+
+    // AJAX: Get favorites count
+    [HttpGet]
+    public async Task<IActionResult> Count()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var count = await _favoriteRepository.GetFavoriteCountAsync(userId);
+        return Json(new { count });
+    }
 }

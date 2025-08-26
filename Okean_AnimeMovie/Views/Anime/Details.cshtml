@@ -92,13 +92,12 @@
                     </div>
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <form asp-action="@(isFavorite ? "RemoveFromFavorites" : "AddToFavorites")" method="post" class="d-grid">
-                            <input type="hidden" name="id" value="@Model.Id" />
-                            <button type="submit" class="btn @(isFavorite ? "btn-danger" : "btn-outline-primary")">
+                        <div class="d-grid">
+                            <button id="favToggleBtn" type="button" class="btn @(isFavorite ? "btn-danger" : "btn-outline-primary")" data-fav="@(isFavorite.ToString().ToLower())">
                                 <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart") me-2"></i>
-                                @(isFavorite ? "Xóa khỏi Yêu thích" : "Thêm vào Yêu thích")
+                                <span>@(isFavorite ? "Xóa khỏi Yêu thích" : "Thêm vào Yêu thích")</span>
                             </button>
-                        </form>
+                        </div>
                     }
                     else
                     {
@@ -209,6 +208,46 @@
 </div>
 
 @section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('favToggleBtn');
+            if (!btn) return;
+            btn.addEventListener('click', async function () {
+                try {
+                    btn.classList.add('loading');
+                    const res = await fetch('/Favorites/Toggle?animeId=@Model.Id', {
+                        method: 'POST'
+                    });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data.success) {
+                        const isFav = data.isFavorite === true;
+                        btn.dataset.fav = isFav ? 'true' : 'false';
+                        btn.classList.toggle('btn-outline-primary', !isFav);
+                        btn.classList.toggle('btn-danger', isFav);
+                        const icon = btn.querySelector('i');
+                        const label = btn.querySelector('span');
+                        if (icon) icon.className = isFav ? 'bi bi-heart-fill me-2' : 'bi bi-heart me-2';
+                        if (label) label.textContent = isFav ? 'Xóa khỏi Yêu thích' : 'Thêm vào Yêu thích';
+                        const badge = document.getElementById('favCountBadge');
+                        if (badge) {
+                            const count = data.count ?? 0;
+                            if (count > 0) {
+                                badge.textContent = count;
+                                badge.classList.remove('d-none');
+                            } else {
+                                badge.classList.add('d-none');
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error(e);
+                } finally {
+                    btn.classList.remove('loading');
+                }
+            });
+        });
+    </script>
     <style>
         .nav-pills .nav-link {
             border-radius: 999px;
