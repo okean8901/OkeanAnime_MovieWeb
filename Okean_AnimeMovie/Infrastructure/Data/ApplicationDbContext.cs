@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<ViewCount> ViewCounts { get; set; }
+    public DbSet<ViewHistory> ViewHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -100,6 +101,31 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.UserAgent).IsRequired().HasMaxLength(500);
             entity.Property(e => e.Referrer).HasMaxLength(500);
             entity.HasIndex(e => new { e.AnimeId, e.IpAddress, e.ViewedAt }).IsUnique();
+        });
+
+        // Configure ViewHistory entity
+        builder.Entity<ViewHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.UserId, e.AnimeId, e.EpisodeId, e.WatchedAt }).IsUnique();
+            entity.Property(e => e.WatchDuration).HasDefaultValue(0);
+            entity.Property(e => e.IsCompleted).HasDefaultValue(false);
+            
+            // Configure foreign key relationships with NO ACTION
+            entity.HasOne(vh => vh.User)
+                .WithMany(u => u.ViewHistories)
+                .HasForeignKey(vh => vh.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+                
+            entity.HasOne(vh => vh.Anime)
+                .WithMany()
+                .HasForeignKey(vh => vh.AnimeId)
+                .OnDelete(DeleteBehavior.NoAction);
+                
+            entity.HasOne(vh => vh.Episode)
+                .WithMany()
+                .HasForeignKey(vh => vh.EpisodeId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         // Configure ApplicationUser entity

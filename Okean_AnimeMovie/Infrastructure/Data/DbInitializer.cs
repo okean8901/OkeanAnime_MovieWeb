@@ -53,8 +53,8 @@ public static class DbInitializer
         // Seed genres
         if (!await context.Genres.AnyAsync())
         {
-                         var genres = new List<Genre>
-             {
+            var genres = new List<Genre>
+            {
                  new() { Name = "Action", Description = "Phim hành động với các cảnh đánh nhau và phiêu lưu gay cấn" },
                  new() { Name = "Adventure", Description = "Những cuộc hành trình và khám phá hoành tráng" },
                  new() { Name = "Comedy", Description = "Nội dung hài hước và vui nhộn" },
@@ -89,7 +89,7 @@ public static class DbInitializer
                  new() { Name = "Shoujo", Description = "Phim dành cho nữ thiếu niên" },
                  new() { Name = "Seinen", Description = "Phim dành cho nam thanh niên" },
                  new() { Name = "Josei", Description = "Phim dành cho nữ thanh niên" }
-             };
+            };
 
             await context.Genres.AddRangeAsync(genres);
             await context.SaveChangesAsync();
@@ -221,8 +221,8 @@ public static class DbInitializer
             await context.Animes.AddRangeAsync(animes);
             await context.SaveChangesAsync();
 
-                         // Add genres to anime
-             var animeGenres = new List<AnimeGenre>();
+            // Add genres to anime
+            var animeGenres = new List<AnimeGenre>();
 
                            // Ragna Crimson - Action, Fantasy, Supernatural, Demons
               animeGenres.AddRange(new[]
@@ -274,8 +274,8 @@ public static class DbInitializer
               });
 
               // Cạo râu xong, tôi nhặt gái về nhà - Comedy, Drama, Romance, Slice of Life, Josei
-              animeGenres.AddRange(new[]
-              {
+            animeGenres.AddRange(new[]
+            {
                   new AnimeGenre { AnimeId = animes[5].Id, GenreId = genres.First(g => g.Name == "Comedy").Id },
                   new AnimeGenre { AnimeId = animes[5].Id, GenreId = genres.First(g => g.Name == "Drama").Id },
                   new AnimeGenre { AnimeId = animes[5].Id, GenreId = genres.First(g => g.Name == "Romance").Id },
@@ -284,8 +284,8 @@ public static class DbInitializer
               });
 
               // Chào mừng đến với lớp học đề cao thực lực - Comedy, Drama, Romance, Slice of Life, School, Psychological
-              animeGenres.AddRange(new[]
-              {
+            animeGenres.AddRange(new[]
+            {
                   new AnimeGenre { AnimeId = animes[6].Id, GenreId = genres.First(g => g.Name == "Comedy").Id },
                   new AnimeGenre { AnimeId = animes[6].Id, GenreId = genres.First(g => g.Name == "Drama").Id },
                   new AnimeGenre { AnimeId = animes[6].Id, GenreId = genres.First(g => g.Name == "Romance").Id },
@@ -295,8 +295,8 @@ public static class DbInitializer
               });
 
               // Vì con gái, tôi có thể đánh bại cả ma vương - Action, Adventure, Fantasy, Drama, Mystery, Romance, Sci-Fi, Supernatural
-              animeGenres.AddRange(new[]
-              {
+            animeGenres.AddRange(new[]
+            {
                   new AnimeGenre { AnimeId = animes[7].Id, GenreId = genres.First(g => g.Name == "Action").Id },
                   new AnimeGenre { AnimeId = animes[7].Id, GenreId = genres.First(g => g.Name == "Adventure").Id },
                   new AnimeGenre { AnimeId = animes[7].Id, GenreId = genres.First(g => g.Name == "Fantasy").Id },
@@ -305,13 +305,13 @@ public static class DbInitializer
                   new AnimeGenre { AnimeId = animes[7].Id, GenreId = genres.First(g => g.Name == "Romance").Id },
                   new AnimeGenre { AnimeId = animes[7].Id, GenreId = genres.First(g => g.Name == "Sci-Fi").Id },
                   new AnimeGenre { AnimeId = animes[7].Id, GenreId = genres.First(g => g.Name == "Supernatural").Id }
-              });
+            });
 
-             await context.AnimeGenres.AddRangeAsync(animeGenres);
-             await context.SaveChangesAsync();
+            await context.AnimeGenres.AddRangeAsync(animeGenres);
+            await context.SaveChangesAsync();
 
-             // Add episodes
-             var episodes = new List<Episode>();
+            // Add episodes
+            var episodes = new List<Episode>();
              
              // Ragna Crimson episodes (24 tập)
              for (int i = 1; i <= 24; i++)
@@ -413,20 +413,20 @@ public static class DbInitializer
              
              // Vì con gái, tôi có thể đánh bại cả ma vương episodes (12 tập)
              for (int i = 1; i <= 12; i++)
-             {
-                 episodes.Add(new Episode
-                 {
+            {
+                episodes.Add(new Episode
+                {
                      AnimeId = animes[7].Id,
-                     EpisodeNumber = i,
+                    EpisodeNumber = i,
                      Title = $"Vì con gái, tôi có thể đánh bại cả ma vương - Tập {i:00}",
                      VideoUrl = $"https://youtu.be/rzq2TGm3FVw?si=OYhc0fu-UlE3mAql",
-                     VideoType = "Embed",
-                     Duration = 1440 // 24 minutes
-                 });
-             }
+                    VideoType = "Embed",
+                    Duration = 1440 // 24 minutes
+                });
+            }
 
-             await context.Episodes.AddRangeAsync(episodes);
-             await context.SaveChangesAsync();
+            await context.Episodes.AddRangeAsync(episodes);
+            await context.SaveChangesAsync();
         }
     }
 }

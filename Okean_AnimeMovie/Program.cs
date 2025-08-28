@@ -69,6 +69,7 @@ namespace Okean_AnimeMovie
 
             // Add Services
             builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IViewHistoryService, ViewHistoryService>();
 
             // Add AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));

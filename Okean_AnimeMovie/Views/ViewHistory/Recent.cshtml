@@ -1,0 +1,93 @@
+@model IEnumerable<Okean_AnimeMovie.Core.DTOs.ViewHistoryDto>
+@{
+    ViewData["Title"] = "Đã xem gần đây";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Đã xem gần đây</h1>
+                <a href="@Url.Action("Index", "ViewHistory")" class="btn btn-outline-primary">
+                    <i class="fas fa-history"></i> Xem tất cả lịch sử
+                </a>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Chưa có lịch sử xem phim</h4>
+                    <p class="text-muted">Bạn chưa xem bộ phim nào. Hãy bắt đầu khám phá anime mới!</p>
+                    <a href="@Url.Action("Index", "Anime")" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Xem anime
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var history in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="position-relative">
+                                    <img src="@history.AnimePoster" class="card-img-top" alt="@history.AnimeTitle" 
+                                         style="height: 200px; object-fit: cover;">
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <span class="badge bg-success">Tập @history.EpisodeNumber</span>
+                                    </div>
+                                    @if (history.IsCompleted)
+                                    {
+                                        <div class="position-absolute bottom-0 start-0 m-2">
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-check"></i> Hoàn thành
+                                            </span>
+                                        </div>
+                                    }
+                                    <div class="position-absolute bottom-0 end-0 m-2">
+                                        <span class="badge bg-dark">
+                                            @history.FormattedWatchedAt
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate" title="@history.AnimeTitle">
+                                        @history.AnimeTitle
+                                    </h6>
+                                    <p class="card-text small text-muted mb-2">
+                                        @history.EpisodeTitle
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock"></i> @history.FormattedWatchDuration
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar"></i> @history.WatchedAt.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="@Url.Action("Watch", "Anime", new { id = history.AnimeId, episode = history.EpisodeNumber })" 
+                                           class="btn btn-primary btn-sm flex-fill">
+                                            <i class="fas fa-play"></i> Tiếp tục
+                                        </a>
+                                        <a href="@Url.Action("Details", "Anime", new { id = history.AnimeId })" 
+                                           class="btn btn-outline-secondary btn-sm">
+                                            <i class="fas fa-info"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="@Url.Action("Index", "ViewHistory")" class="btn btn-outline-primary">
+                        <i class="fas fa-history"></i> Xem tất cả lịch sử xem phim
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

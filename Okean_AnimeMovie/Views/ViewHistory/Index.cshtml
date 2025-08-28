@@ -1,0 +1,237 @@
+@model IEnumerable<Okean_AnimeMovie.Core.DTOs.ViewHistoryDto>
+@{
+    ViewData["Title"] = "Lịch sử xem phim";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Lịch sử xem phim</h1>
+                <div>
+                    <button class="btn btn-outline-danger btn-sm px-3 py-2 rounded-pill shadow-sm btn-clear-history" onclick="clearHistory()">
+                        <i class="fas fa-trash-alt me-2"></i>Xóa tất cả
+                    </button>
+                </div>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Chưa có lịch sử xem phim</h4>
+                    <p class="text-muted">Bạn chưa xem bộ phim nào. Hãy bắt đầu khám phá anime mới!</p>
+                    <a href="@Url.Action("Index", "Anime")" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Xem anime
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var history in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm history-card">
+                                <div class="position-relative">
+                                    <img src="@history.AnimePoster" class="card-img-top" alt="@history.AnimeTitle" 
+                                         style="height: 200px; object-fit: cover;">
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <span class="badge bg-success">@history.EpisodeNumber</span>
+                                    </div>
+                                    @if (history.IsCompleted)
+                                    {
+                                        <div class="position-absolute bottom-0 start-0 m-2">
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-check"></i> Hoàn thành
+                                            </span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate" title="@history.AnimeTitle">
+                                        @history.AnimeTitle
+                                    </h6>
+                                    <p class="card-text small text-muted mb-2">
+                                        @history.EpisodeTitle
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock"></i> @history.FormattedWatchDuration
+                                        </small>
+                                        <small class="text-muted">
+                                            @history.FormattedWatchedAt
+                                        </small>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="@Url.Action("Watch", "Anime", new { id = history.AnimeId, episode = history.EpisodeNumber })" 
+                                           class="btn btn-primary btn-sm flex-fill">
+                                            <i class="fas fa-play"></i> Tiếp tục
+                                        </a>
+                                        <button class="btn btn-outline-danger btn-sm btn-delete-history" 
+                                                onclick="deleteHistory(@history.Id)" title="Xóa lịch sử này">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @if (ViewBag.TotalPages > 1)
+                {
+                    <nav aria-label="Lịch sử xem phim">
+                        <ul class="pagination justify-content-center">
+                            @if (ViewBag.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                                </li>
+                            }
+
+                            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for clear history button */
+    .btn-clear-history {
+        border: 2px solid #dc3545;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-clear-history:hover {
+        background-color: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-clear-history:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn-clear-history::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .btn-clear-history:hover::before {
+        left: 100%;
+    }
+    
+    /* Animation for delete buttons in history items */
+    .btn-delete-history {
+        transition: all 0.2s ease;
+        opacity: 0.7;
+    }
+    
+    .btn-delete-history:hover {
+        opacity: 1;
+        transform: scale(1.05);
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    
+    /* Enhanced card hover effects */
+    .history-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+    }
+    
+    .history-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border-color: #dee2e6;
+    }
+    
+    /* Smooth animations for all buttons */
+    .btn {
+        transition: all 0.2s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function deleteHistory(id) {
+            if (confirm('Bạn có chắc muốn xóa lịch sử xem phim này?')) {
+                fetch(`/ViewHistory/Delete/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Có lỗi xảy ra: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa lịch sử xem phim');
+                });
+            }
+        }
+
+        function clearHistory() {
+            if (confirm('Bạn có chắc muốn xóa tất cả lịch sử xem phim? Hành động này không thể hoàn tác!')) {
+                fetch('/ViewHistory/Clear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Có lỗi xảy ra: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa lịch sử xem phim');
+                });
+            }
+        }
+    </script>
+}
