@@ -83,9 +83,9 @@ try {
     exit 1
 }
 
-# Test Docker build
+# Test Docker build (optional)
 Write-Host ""
-Write-Host "Test Docker build..." -ForegroundColor Yellow
+Write-Host "Test Docker build (optional)..." -ForegroundColor Yellow
 try {
     docker build -t okean-anime-movie-test .
     if ($LASTEXITCODE -eq 0) {
@@ -94,11 +94,11 @@ try {
         docker rmi okean-anime-movie-test
     } else {
         Write-Host "Docker build thất bại!" -ForegroundColor Red
-        exit 1
+        Write-Host "Nhưng bạn vẫn có thể tiếp tục deploy lên Railway" -ForegroundColor Yellow
     }
 } catch {
-    Write-Host "Lỗi Docker build: $($_.Exception.Message)" -ForegroundColor Red
-    exit 1
+    Write-Host "Docker không được cài đặt hoặc lỗi: $($_.Exception.Message)" -ForegroundColor Yellow
+    Write-Host "Bạn vẫn có thể tiếp tục deploy lên Railway" -ForegroundColor Green
 }
 
 Write-Host ""

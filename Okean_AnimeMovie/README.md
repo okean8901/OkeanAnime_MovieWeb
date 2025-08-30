@@ -1,6 +1,6 @@
 # Okean Anime Movie
 
-Ứng dụng web xem anime được xây dựng bằng ASP.NET Core 8.0 và MySQL.
+Ứng dụng web xem anime được xây dựng bằng ASP.NET Core 6.0 và MySQL.
 
 ## 🚀 Tính năng
 
@@ -14,7 +14,7 @@
 
 ## 🛠️ Công nghệ sử dụng
 
-- **Backend**: ASP.NET Core 8.0
+- **Backend**: ASP.NET Core 6.0
 - **Database**: MySQL 8.0
 - **ORM**: Entity Framework Core
 - **Authentication**: ASP.NET Core Identity + JWT
@@ -23,7 +23,7 @@
 
 ## 📋 Yêu cầu hệ thống
 
-- .NET 8.0 SDK
+- .NET 6.0 SDK
 - MySQL 8.0+
 - Git
 
