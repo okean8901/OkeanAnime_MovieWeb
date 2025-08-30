@@ -25,17 +25,28 @@ namespace Okean_AnimeMovie
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
-                // Fallback for Railway environment variables
-                var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-                var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "Okean_AnimeMovie";
-                var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "root";
-                var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "123456";
-                var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
+                // Railway MySQL environment variables
+                var dbHost = Environment.GetEnvironmentVariable("MYSQLHOST") ?? 
+                            Environment.GetEnvironmentVariable("DB_HOST") ?? 
+                            "mysql.railway.internal";
+                var dbName = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? 
+                            Environment.GetEnvironmentVariable("DB_NAME") ?? 
+                            "railway";
+                var dbUser = Environment.GetEnvironmentVariable("MYSQLUSER") ?? 
+                            Environment.GetEnvironmentVariable("DB_USER") ?? 
+                            "root";
+                var dbPassword = Environment.GetEnvironmentVariable("MYSQLPASSWORD") ?? 
+                                Environment.GetEnvironmentVariable("DB_PASSWORD") ?? 
+                                "vVBagZYpROAhKhnFmCUINweFZtCCITmy";
+                var dbPort = Environment.GetEnvironmentVariable("MYSQLPORT") ?? 
+                            Environment.GetEnvironmentVariable("DB_PORT") ?? 
+                            "3306";
                 
-                connectionString = $"Server={dbHost};Database={dbName};User={dbUser};Password={dbPassword};Port={dbPort};CharSet=utf8mb4;";
+                connectionString = $"Server={dbHost};Database={dbName};User={dbUser};Password={dbPassword};Port={dbPort};CharSet=utf8mb4;SslMode=Preferred;";
                 
                 // Log connection info (without password)
                 Console.WriteLine($"Database Connection: Server={dbHost}, Database={dbName}, User={dbUser}, Port={dbPort}");
+                Console.WriteLine($"Using Railway MySQL environment variables");
             }
             else
             {
