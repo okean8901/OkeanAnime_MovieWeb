@@ -49,7 +49,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.Trailer).HasMaxLength(500);
             entity.Property(e => e.Status).HasMaxLength(20);
             entity.Property(e => e.Type).HasMaxLength(20);
-            entity.Property(e => e.Rating).HasPrecision(3, 2);
+            entity.Property(e => e.Rating).HasColumnType("decimal(3,2)");
         });
 
         // Configure Genre entity
