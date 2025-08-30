@@ -22,9 +22,22 @@ namespace Okean_AnimeMovie
             builder.Services.AddControllersWithViews();
 
             // Add Entity Framework
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                // Fallback for Railway environment variables
+                var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+                var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "Okean_AnimeMovie";
+                var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "root";
+                var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "123456";
+                var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
+                
+                connectionString = $"Server={dbHost};Database={dbName};User={dbUser};Password={dbPassword};Port={dbPort};";
+            }
+            
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), 
-                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
+                options.UseMySql(connectionString, 
+                    ServerVersion.AutoDetect(connectionString)));
 
             // Add Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -84,7 +97,16 @@ namespace Okean_AnimeMovie
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // Configure for Railway (disable HTTPS redirect in production)
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHsts();
+            }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
+            
             app.UseStaticFiles();
 
             app.UseRouting();

@@ -1,7 +1,7 @@
-# Ignore all appsettings files
-appsettings*.Development.json
-appsettings*.Production.json
-appsettings*.Staging.json
+# Ignore all appsettings files except the main one
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
 
 # Build results
 [Dd]ebug/
