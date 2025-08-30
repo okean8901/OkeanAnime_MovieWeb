@@ -32,7 +32,14 @@ namespace Okean_AnimeMovie
                 var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "123456";
                 var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
                 
-                connectionString = $"Server={dbHost};Database={dbName};User={dbUser};Password={dbPassword};Port={dbPort};";
+                connectionString = $"Server={dbHost};Database={dbName};User={dbUser};Password={dbPassword};Port={dbPort};CharSet=utf8mb4;";
+                
+                // Log connection info (without password)
+                Console.WriteLine($"Database Connection: Server={dbHost}, Database={dbName}, User={dbUser}, Port={dbPort}");
+            }
+            else
+            {
+                Console.WriteLine("Using connection string from configuration");
             }
             
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
