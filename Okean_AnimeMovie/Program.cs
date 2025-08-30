@@ -53,6 +53,10 @@ namespace Okean_AnimeMovie
             .AddDefaultTokenProviders();
 
             // Add JWT Authentication
+            var jwtSecret = builder.Configuration["Jwt:Secret"] ?? 
+                           Environment.GetEnvironmentVariable("JWT_SECRET") ?? 
+                           "YourSuperSecretKeyHere123456789012345678901234567890";
+            
             builder.Services.AddAuthentication(options =>
             {
                 // Use Identity cookie as the default scheme so MVC sign-in works
@@ -67,10 +71,10 @@ namespace Okean_AnimeMovie
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "OkeanAnimeMovie",
+                    ValidAudience = builder.Configuration["Jwt:Audience"] ?? "OkeanAnimeMovieUsers",
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
+                        Encoding.UTF8.GetBytes(jwtSecret))
                 };
             });
 
@@ -123,7 +127,16 @@ namespace Okean_AnimeMovie
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             // Initialize database with sample data
-            await DbInitializer.InitializeAsync(app.Services);
+            try
+            {
+                await DbInitializer.InitializeAsync(app.Services);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't crash the application
+                Console.WriteLine($"Database initialization failed: {ex.Message}");
+                // In production, you might want to log this to a proper logging service
+            }
 
             app.Run();
         }
