@@ -2,15 +2,13 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
 
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["Okean_AnimeMovie/Okean_AnimeMovie.csproj", "Okean_AnimeMovie/"]
-RUN dotnet restore "Okean_AnimeMovie/Okean_AnimeMovie.csproj"
+COPY ["Okean_AnimeMovie.csproj", "./"]
+RUN dotnet restore "Okean_AnimeMovie.csproj"
 COPY . .
-WORKDIR "/src/Okean_AnimeMovie"
 RUN dotnet build "Okean_AnimeMovie.csproj" -c Release -o /app/build
 
 # Publish stage

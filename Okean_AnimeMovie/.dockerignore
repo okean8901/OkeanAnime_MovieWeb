@@ -95,3 +95,6 @@ README.md
 *.ps1
 *.sh
 *.bat
+
+# Migrations (will be generated on Railway)
+Migrations/

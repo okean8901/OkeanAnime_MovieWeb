@@ -97,14 +97,18 @@ namespace Okean_AnimeMovie
                 app.UseHsts();
             }
 
-            // Configure for Railway (disable HTTPS redirect in production)
-            if (!app.Environment.IsDevelopment())
+            // Configure for Railway
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+            app.Urls.Add($"http://0.0.0.0:{port}");
+            
+            // Disable HTTPS redirect in production for Railway
+            if (app.Environment.IsDevelopment())
             {
-                app.UseHsts();
+                app.UseHttpsRedirection();
             }
             else
             {
-                app.UseHttpsRedirection();
+                app.UseHsts();
             }
             
             app.UseStaticFiles();

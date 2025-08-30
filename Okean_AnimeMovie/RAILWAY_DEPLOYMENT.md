@@ -12,6 +12,13 @@
   - `Dockerfile`
   - `railway.json`
   - `.dockerignore`
+  - `appsettings.Production.json`
+
+### 1.3. Setup Local
+```bash
+# Chạy script setup
+.\setup_railway.ps1
+```
 
 ## 2. Tạo Project trên Railway
 
@@ -38,6 +45,7 @@ DB_NAME=railway
 DB_USER=root
 DB_PASSWORD=your-mysql-password
 DB_PORT=3306
+PORT=8080
 ```
 
 ### 3.2. JWT Variables (Tùy chọn)

@@ -1,6 +1,5 @@
 # Ignore all appsettings files except the main one
 appsettings.Development.json
-appsettings.Production.json
 appsettings.Staging.json
 
 # Build results
