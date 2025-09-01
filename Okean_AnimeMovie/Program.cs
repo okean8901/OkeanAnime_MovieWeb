@@ -10,6 +10,7 @@ using Okean_AnimeMovie.Core.Services;
 using Okean_AnimeMovie.Infrastructure.Data;
 using Okean_AnimeMovie.Infrastructure.Repositories;
 using Okean_AnimeMovie.Infrastructure.Services;
+using Okean_AnimeMovie.Application.Services.Email;
 
 namespace Okean_AnimeMovie
 {
@@ -20,7 +21,8 @@ namespace Okean_AnimeMovie
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            builder.Services.AddMemoryCache();
 
             // Add Entity Framework
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -98,6 +100,12 @@ namespace Okean_AnimeMovie
             // Add Services
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IViewHistoryService, ViewHistoryService>();
+            
+            // Configure Email
+            var emailSettings = new EmailSettings();
+            builder.Configuration.GetSection("Email").Bind(emailSettings);
+            builder.Services.AddSingleton(emailSettings);
+            builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
             // Add AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));

@@ -5,6 +5,8 @@ using System.Security.Claims;
 using Okean_AnimeMovie.Core.DTOs;
 using Okean_AnimeMovie.Core.Entities;
 using Okean_AnimeMovie.Core.Services;
+using Okean_AnimeMovie.Application.Services.Email;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Okean_AnimeMovie.Controllers;
 
@@ -14,17 +16,23 @@ public class AccountController : Controller
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IJwtService _jwtService;
     private readonly ILogger<AccountController> _logger;
+    private readonly IEmailSender _emailSender;
+    private readonly IMemoryCache _cache;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IJwtService jwtService,
-        ILogger<AccountController> logger)
+        ILogger<AccountController> logger,
+        IEmailSender emailSender,
+        IMemoryCache cache)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _jwtService = jwtService;
         _logger = logger;
+        _emailSender = emailSender;
+        _cache = cache;
     }
 
     [HttpGet]
@@ -109,7 +117,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult ForgotPassword()
     {
-        return View();
+        return View("~/Views/Account/ForgotPassword.cshtml");
     }
 
     [HttpPost]
@@ -120,26 +128,36 @@ public class AccountController : Controller
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var resetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                // Generate 6-digit OTP valid for 10 minutes
+                var otp = Random.Shared.Next(100000, 999999).ToString();
+                var cacheKey = $"pwd_otp:{model.Email.ToLower()}";
+                _cache.Set(cacheKey, otp, TimeSpan.FromMinutes(10));
+                _logger.LogInformation("Password reset OTP for {Email}: {Otp}", model.Email, otp);
 
-                // TODO: Send email with reset link
-                _logger.LogInformation("Password reset link: {ResetLink}", resetLink);
+                try
+                {
+                    await _emailSender.SendEmailAsync(model.Email, "Mã OTP đặt lại mật khẩu - Okean Anime Movie",
+                        $"<p>Chào bạn,</p><p>Mã OTP của bạn là: <strong>{otp}</strong></p><p>Mã có hiệu lực trong 10 phút.</p>");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send OTP email");
+                }
 
-                return RedirectToAction("ForgotPasswordConfirmation");
+                return RedirectToAction("VerifyOtp", new { email = model.Email });
             }
 
             // Don't reveal that the user does not exist
             return RedirectToAction("ForgotPasswordConfirmation");
         }
 
-        return View(model);
+        return View("~/Views/Account/ForgotPassword.cshtml", model);
     }
 
     [HttpGet]
     public IActionResult ForgotPasswordConfirmation()
     {
-        return View();
+        return View("~/Views/Account/ForgotPasswordConfirmation.cshtml");
     }
 
     [HttpGet]
@@ -156,7 +174,59 @@ public class AccountController : Controller
             Token = token
         };
 
-        return View(model);
+        return View("~/Views/Account/ResetPassword.cshtml", model);
+    }
+
+    [HttpGet]
+    public IActionResult VerifyOtp(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return RedirectToAction("ForgotPassword");
+        }
+
+        var model = new VerifyOtpDto { Email = email };
+        return View("~/Views/Account/VerifyOtp.cshtml", model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> VerifyOtp(VerifyOtpDto model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("~/Views/Account/VerifyOtp.cshtml", model);
+        }
+
+        var cacheKey = $"pwd_otp:{model.Email.ToLower()}";
+        if (!_cache.TryGetValue<string>(cacheKey, out var expected) || expected != model.Code)
+        {
+            ModelState.AddModelError(string.Empty, "Mã OTP không hợp lệ hoặc đã hết hạn");
+            return View("~/Views/Account/VerifyOtp.cshtml", model);
+        }
+
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            ModelState.AddModelError(string.Empty, "Không tìm thấy người dùng");
+            return View("~/Views/Account/VerifyOtp.cshtml", model);
+        }
+
+        // consume OTP once verified
+        _cache.Remove(cacheKey);
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+        if (result.Succeeded)
+        {
+            return RedirectToAction("ResetPasswordConfirmation");
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+
+        return View("~/Views/Account/VerifyOtp.cshtml", model);
     }
 
     [HttpPost]
@@ -182,13 +252,13 @@ public class AccountController : Controller
             return RedirectToAction("ResetPasswordConfirmation");
         }
 
-        return View(model);
+        return View("~/Views/Account/ResetPassword.cshtml", model);
     }
 
     [HttpGet]
     public IActionResult ResetPasswordConfirmation()
     {
-        return View();
+        return View("~/Views/Account/ResetPasswordConfirmation.cshtml");
     }
 
     // Google Authentication
