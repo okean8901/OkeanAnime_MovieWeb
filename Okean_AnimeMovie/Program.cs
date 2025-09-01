@@ -11,6 +11,9 @@ using Okean_AnimeMovie.Infrastructure.Data;
 using Okean_AnimeMovie.Infrastructure.Repositories;
 using Okean_AnimeMovie.Infrastructure.Services;
 using Okean_AnimeMovie.Application.Services.Email;
+using Okean_AnimeMovie.Application.Services.Cache;
+using Okean_AnimeMovie.Application.Services.Notification;
+using Okean_AnimeMovie.Middleware;
 
 namespace Okean_AnimeMovie
 {
@@ -100,6 +103,8 @@ namespace Okean_AnimeMovie
             // Add Services
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IViewHistoryService, ViewHistoryService>();
+            builder.Services.AddScoped<IAnimeCacheService, AnimeCacheService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
             
             // Configure Email
             var emailSettings = new EmailSettings();
@@ -124,8 +129,11 @@ namespace Okean_AnimeMovie
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+                    app.UseAuthentication();
+        app.UseAuthorization();
+        
+        // Add Rate Limiting Middleware
+        app.UseMiddleware<RateLimitingMiddleware>();
 
             app.MapControllerRoute(
                 name: "default",

@@ -72,6 +72,9 @@
                     </div>
                 </form>
 
+                <!-- Notifications -->
+                @await Component.InvokeAsync("Notification")
+                
                 <!-- User Menu -->
                 <partial name="_LoginPartial" />
             </div>

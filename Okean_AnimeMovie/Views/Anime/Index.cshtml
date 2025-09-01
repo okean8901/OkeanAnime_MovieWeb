@@ -48,7 +48,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="row g-2">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <select name="genreId" class="form-select form-select-lg" onchange="this.form.submit()">
                                     <option value="">Tất cả thể loại</option>
                                     @if (ViewBag.Genres != null)
@@ -61,7 +61,7 @@
                                     }
                                 </select>
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
                                 <select name="year" class="form-select form-select-lg" onchange="this.form.submit()">
                                     <option value="">Tất cả năm</option>
                                     @for (int year = DateTime.Now.Year; year >= 1990; year--)
@@ -69,6 +69,17 @@
                                         var selected = ViewBag.SelectedYear != null && ViewBag.SelectedYear.ToString() == year.ToString();
                                         <option value="@year" selected="@selected">@year</option>
                                     }
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <select name="sortBy" class="form-select form-select-lg" onchange="this.form.submit()">
+                                    <option value="">Sắp xếp</option>
+                                    <option value="newest" selected="@(ViewBag.SortBy == "newest")">Mới nhất</option>
+                                    <option value="title" selected="@(ViewBag.SortBy == "title")">Tên A-Z</option>
+                                    <option value="title_desc" selected="@(ViewBag.SortBy == "title_desc")">Tên Z-A</option>
+                                    <option value="year" selected="@(ViewBag.SortBy == "year")">Năm mới nhất</option>
+                                    <option value="rating" selected="@(ViewBag.SortBy == "rating")">Đánh giá cao nhất</option>
+                                    <option value="views" selected="@(ViewBag.SortBy == "views")">Lượt xem nhiều nhất</option>
                                 </select>
                             </div>
                         </div>
@@ -550,4 +561,71 @@
             box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
         }
     </style>
+    
+    <script>
+        // AJAX Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.querySelector('form[method="get"]');
+            const searchInput = document.querySelector('input[name="searchTerm"]');
+            const genreSelect = document.querySelector('select[name="genreId"]');
+            const yearSelect = document.querySelector('select[name="year"]');
+            const sortSelect = document.querySelector('select[name="sortBy"]');
+            const animeListContainer = document.querySelector('.anime-list-container');
+            
+            // Debounce function for search input
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+            
+            // Perform AJAX search
+            function performSearch() {
+                const formData = new FormData(searchForm);
+                const searchParams = new URLSearchParams(formData);
+                
+                fetch(`@Url.Action("Index", "Anime")?${searchParams.toString()}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    if (animeListContainer) {
+                        animeListContainer.innerHTML = html;
+                    }
+                    
+                    // Update URL without page reload
+                    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+                    window.history.pushState({}, '', newUrl);
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                });
+            }
+            
+            // Add event listeners
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(performSearch, 500));
+            }
+            
+            if (genreSelect) {
+                genreSelect.addEventListener('change', performSearch);
+            }
+            
+            if (yearSelect) {
+                yearSelect.addEventListener('change', performSearch);
+            }
+            
+            if (sortSelect) {
+                sortSelect.addEventListener('change', performSearch);
+            }
+        });
+    </script>
 }

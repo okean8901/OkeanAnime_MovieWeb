@@ -21,11 +21,12 @@ public class AnimeRepository : GenericRepository<Anime>, IAnimeRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Anime>> SearchAnimeAsync(string searchTerm, int? genreId = null, int? year = null, int page = 1, int pageSize = 20)
+    public async Task<IEnumerable<Anime>> SearchAnimeAsync(string searchTerm, int? genreId = null, int? year = null, string? sortBy = null, int page = 1, int pageSize = 20)
     {
         var query = _dbSet
             .Include(a => a.AnimeGenres)
             .ThenInclude(ag => ag.Genre)
+            .Include(a => a.Ratings)
             .AsQueryable();
 
         if (!string.IsNullOrEmpty(searchTerm))
@@ -45,8 +46,19 @@ public class AnimeRepository : GenericRepository<Anime>, IAnimeRepository
             query = query.Where(a => a.ReleaseYear == year.Value);
         }
 
+        // Apply sorting
+        query = sortBy switch
+        {
+            "title" => query.OrderBy(a => a.Title),
+            "title_desc" => query.OrderByDescending(a => a.Title),
+            "year" => query.OrderByDescending(a => a.ReleaseYear),
+            "rating" => query.OrderByDescending(a => a.Ratings.Average(r => r.Score)),
+            "views" => query.OrderByDescending(a => a.ViewCount),
+            "newest" => query.OrderByDescending(a => a.CreatedAt),
+            _ => query.OrderByDescending(a => a.ViewCount)
+        };
+
         return await query
-            .OrderByDescending(a => a.ViewCount)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

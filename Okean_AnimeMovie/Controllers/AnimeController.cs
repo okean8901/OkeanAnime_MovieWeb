@@ -31,20 +31,26 @@ public class AnimeController : Controller
         _ratingRepository = ratingRepository;
     }
 
-    public async Task<IActionResult> Index(string searchTerm, int? genreId, int? year, int page = 1)
+    public async Task<IActionResult> Index(string searchTerm, int? genreId, int? year, string? sortBy, int page = 1)
     {
         try
         {
-            var animes = await _animeRepository.SearchAnimeAsync(searchTerm ?? "", genreId, year, page, 20);
+            var animes = await _animeRepository.SearchAnimeAsync(searchTerm ?? "", genreId, year, sortBy, page, 20);
             var totalCount = await _animeRepository.GetTotalAnimeCountAsync(searchTerm, genreId, year);
             var genres = await _genreRepository.GetAllAsync();
 
             ViewBag.SearchTerm = searchTerm;
             ViewBag.SelectedGenreId = genreId;
             ViewBag.SelectedYear = year;
+            ViewBag.SortBy = sortBy;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / 20);
             ViewBag.Genres = genres;
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_AnimeList", animes);
+            }
 
             return View(animes);
         }

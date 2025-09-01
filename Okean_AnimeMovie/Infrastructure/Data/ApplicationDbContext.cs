@@ -19,6 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<ViewCount> ViewCounts { get; set; }
     public DbSet<ViewHistory> ViewHistories { get; set; }
+    public DbSet<UserNotification> UserNotifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -134,6 +135,26 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.FirstName).HasMaxLength(50);
             entity.Property(e => e.LastName).HasMaxLength(50);
             entity.Property(e => e.Avatar).HasMaxLength(500);
+        });
+
+        // Configure UserNotification entity
+        builder.Entity<UserNotification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Message).HasMaxLength(500);
+            entity.Property(e => e.Type).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            
+            entity.HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            entity.HasOne(n => n.Anime)
+                .WithMany()
+                .HasForeignKey(n => n.AnimeId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
     }
 }
