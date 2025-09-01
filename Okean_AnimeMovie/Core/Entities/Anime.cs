@@ -12,7 +12,7 @@ public class Anime
     public int TotalEpisodes { get; set; }
     public string Status { get; set; } = "Ongoing"; // Ongoing, Completed, Upcoming
     public string Type { get; set; } = "TV"; // TV, Movie, OVA, Special
-    public double Rating { get; set; }
+    public decimal Rating { get; set; }
     public int ViewCount { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }

@@ -26,7 +26,7 @@ namespace Okean_AnimeMovie.Migrations
                     TotalEpisodes = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Rating = table.Column<double>(type: "float(3)", precision: 3, scale: 2, nullable: false),
+                    Rating = table.Column<decimal>(type: "decimal(3,2)", precision: 3, scale: 2, nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -239,10 +239,14 @@ namespace Okean_AnimeMovie.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AnimeId = table.Column<int>(type: "int", nullable: false),
+                    ParentCommentId = table.Column<int>(type: "int", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    IsEdited = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    LikeCount = table.Column<int>(type: "int", nullable: false),
+                    DislikeCount = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -259,6 +263,11 @@ namespace Okean_AnimeMovie.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Comments_ParentCommentId",
+                        column: x => x.ParentCommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -318,6 +327,35 @@ namespace Okean_AnimeMovie.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ViewCounts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AnimeId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IpAddress = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false),
+                    UserAgent = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    ViewedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Referrer = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ViewCounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ViewCounts_Animes_AnimeId",
+                        column: x => x.AnimeId,
+                        principalTable: "Animes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ViewCounts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AnimeGenres",
                 columns: table => new
                 {
@@ -339,6 +377,39 @@ namespace Okean_AnimeMovie.Migrations
                         principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ViewHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AnimeId = table.Column<int>(type: "int", nullable: false),
+                    EpisodeId = table.Column<int>(type: "int", nullable: false),
+                    WatchedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    WatchDuration = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ViewHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ViewHistories_Animes_AnimeId",
+                        column: x => x.AnimeId,
+                        principalTable: "Animes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ViewHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ViewHistories_Episodes_EpisodeId",
+                        column: x => x.EpisodeId,
+                        principalTable: "Episodes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -391,6 +462,11 @@ namespace Okean_AnimeMovie.Migrations
                 column: "AnimeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_ParentCommentId",
+                table: "Comments",
+                column: "ParentCommentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
                 table: "Comments",
                 column: "UserId");
@@ -421,6 +497,33 @@ namespace Okean_AnimeMovie.Migrations
                 table: "Ratings",
                 columns: new[] { "UserId", "AnimeId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViewCounts_AnimeId_IpAddress_ViewedAt",
+                table: "ViewCounts",
+                columns: new[] { "AnimeId", "IpAddress", "ViewedAt" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViewCounts_UserId",
+                table: "ViewCounts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViewHistories_AnimeId",
+                table: "ViewHistories",
+                column: "AnimeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViewHistories_EpisodeId",
+                table: "ViewHistories",
+                column: "EpisodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViewHistories_UserId_AnimeId_EpisodeId_WatchedAt",
+                table: "ViewHistories",
+                columns: new[] { "UserId", "AnimeId", "EpisodeId", "WatchedAt" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -448,13 +551,16 @@ namespace Okean_AnimeMovie.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Episodes");
-
-            migrationBuilder.DropTable(
                 name: "Favorites");
 
             migrationBuilder.DropTable(
                 name: "Ratings");
+
+            migrationBuilder.DropTable(
+                name: "ViewCounts");
+
+            migrationBuilder.DropTable(
+                name: "ViewHistories");
 
             migrationBuilder.DropTable(
                 name: "Genres");
@@ -463,10 +569,13 @@ namespace Okean_AnimeMovie.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Animes");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Episodes");
+
+            migrationBuilder.DropTable(
+                name: "Animes");
         }
     }
 }

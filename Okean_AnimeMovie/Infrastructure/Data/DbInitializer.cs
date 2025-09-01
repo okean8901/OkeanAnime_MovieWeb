@@ -113,7 +113,7 @@ public static class DbInitializer
                     TotalEpisodes = 24,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
 
                 },
@@ -128,7 +128,7 @@ public static class DbInitializer
                     TotalEpisodes = 12,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
                 },
                 new()
@@ -142,7 +142,7 @@ public static class DbInitializer
                     TotalEpisodes = 12,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
                 },
                 new()
@@ -156,7 +156,7 @@ public static class DbInitializer
                     TotalEpisodes = 12,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
                 },
                 new()
@@ -170,7 +170,7 @@ public static class DbInitializer
                     TotalEpisodes = 12,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
                 },
                 new()
@@ -184,7 +184,7 @@ public static class DbInitializer
                     TotalEpisodes = 12,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
                 },
                 new()
@@ -198,7 +198,7 @@ public static class DbInitializer
                     TotalEpisodes = 12,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
                 },
                 new()
@@ -212,7 +212,7 @@ public static class DbInitializer
                     TotalEpisodes = 12,
                     Status = "Completed",
                     Type = "TV",
-                    Rating = 8.0,
+                    Rating = 8.0M,
                     ViewCount = 600000
                 }
 
@@ -430,3 +430,4 @@ public static class DbInitializer
         }
     }
 }
+

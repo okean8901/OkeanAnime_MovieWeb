@@ -14,7 +14,7 @@ public class AnimeDto
     public int TotalEpisodes { get; set; }
     public string Status { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
-    public double Rating { get; set; }
+    public decimal Rating { get; set; }
     public int ViewCount { get; set; }
     public List<string> Genres { get; set; } = new List<string>();
     public bool IsFavorite { get; set; }

@@ -411,7 +411,7 @@ public class AnimeController : Controller
         anime = await _animeRepository.GetAnimeWithDetailsAsync(animeId);
         if (anime != null && anime.Ratings != null && anime.Ratings.Any())
         {
-            anime.Rating = Math.Round(anime.Ratings.Average(r => r.Score), 1);
+            anime.Rating = (decimal)Math.Round(anime.Ratings.Average(r => r.Score), 1);
             await _animeRepository.UpdateAsync(anime);
         }
 

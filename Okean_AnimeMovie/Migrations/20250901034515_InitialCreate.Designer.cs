@@ -12,8 +12,8 @@ using Okean_AnimeMovie.Infrastructure.Data;
 namespace Okean_AnimeMovie.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250828060641_AddViewHistoryEntity")]
-    partial class AddViewHistoryEntity
+    [Migration("20250901034515_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,9 +181,9 @@ namespace Okean_AnimeMovie.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<double>("Rating")
+                    b.Property<decimal>("Rating")
                         .HasPrecision(3, 2)
-                        .HasColumnType("float(3)");
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("int");

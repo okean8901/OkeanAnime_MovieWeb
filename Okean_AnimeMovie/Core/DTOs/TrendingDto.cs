@@ -8,7 +8,7 @@ public class TrendingDto
     public string? CoverImage { get; set; }
     public string Type { get; set; } = string.Empty;
     public int ReleaseYear { get; set; }
-    public double Rating { get; set; }
+    public decimal Rating { get; set; }
     public int ViewCount { get; set; }
     public int RatingCount { get; set; }
     public int CommentCount { get; set; }

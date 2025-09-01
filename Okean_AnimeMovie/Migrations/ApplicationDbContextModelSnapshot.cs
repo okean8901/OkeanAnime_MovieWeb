@@ -178,9 +178,9 @@ namespace Okean_AnimeMovie.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<double>("Rating")
+                    b.Property<decimal>("Rating")
                         .HasPrecision(3, 2)
-                        .HasColumnType("float(3)");
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("int");
