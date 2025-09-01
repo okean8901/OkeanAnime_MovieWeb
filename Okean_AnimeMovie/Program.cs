@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Okean_AnimeMovie.Core.Entities;
@@ -38,12 +39,13 @@ namespace Okean_AnimeMovie
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            // Add JWT Authentication
+            // Add Authentication
             builder.Services.AddAuthentication(options =>
             {
                 // Use Identity cookie as the default scheme so MVC sign-in works
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -58,6 +60,32 @@ namespace Okean_AnimeMovie
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
                 };
+            })
+            .AddGoogle(options =>
+            {
+                var clientId = builder.Configuration["Authentication:Google:ClientId"];
+                var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                
+                // Log để debug
+                Console.WriteLine($"Google OAuth ClientId: {clientId}");
+                Console.WriteLine($"Google OAuth ClientSecret: {clientSecret?.Substring(0, Math.Min(10, clientSecret?.Length ?? 0))}...");
+                
+                if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+                {
+                    throw new InvalidOperationException("Google OAuth credentials are not configured properly");
+                }
+                
+                options.ClientId = clientId;
+                options.ClientSecret = clientSecret;
+                options.CallbackPath = "/signin-google";
+                
+                // Cấu hình bổ sung
+                options.SaveTokens = true;
+                
+                // Thêm scopes
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
             });
 
             // Add Repositories
